@@ -41,25 +41,246 @@
 <div class="section-head"><div><h2>Verification checklist</h2><p>A simple standard for reading reports responsibly.</p></div></div><section class="card"><ol style="padding-left:20px;color:#c5d5e5;margin:0"><li>Check the original publisher, author and publication time.</li><li>Look for confirmation from a second independent newsroom or primary institution.</li><li>Separate confirmed facts from claims by governments, militaries or armed groups.</li><li>For images/videos, check the original upload, location, date and possible reuse from older events.</li><li>If sources disagree, mark the issue as disputed rather than choosing the most dramatic claim.</li></ol></section>
 <footer class="foot"><span>Data discovery: GDELT public news index · automatic fetch may be unavailable at times.</span><span class="credit">Created by Fasil Adattil</span></footer>
 </main>
+
 <script>
-const regions=[
-{name:'Middle East & Gulf',q:'(Iran OR Israel OR Gaza OR Lebanon OR Yemen OR Houthi OR Hormuz OR "Red Sea") (war OR attack OR strike OR missile OR drone OR ceasefire OR conflict OR military)'},
-{name:'Europe',q:'(Ukraine OR Russia) (war OR attack OR strike OR missile OR drone OR ceasefire OR conflict OR military)'},
-{name:'Africa',q:'(Sudan OR Sahel OR "Democratic Republic of the Congo" OR Somalia OR Ethiopia) (war OR attack OR strike OR fighting OR conflict OR military)'},
-{name:'South & East Asia',q:'(Pakistan OR India OR Myanmar OR Taiwan OR "North Korea" OR "South China Sea") (attack OR strike OR conflict OR military OR tension OR fighting)'},
-{name:'Americas',q:'(Haiti OR Mexico OR Colombia OR Venezuela) (violence OR attack OR conflict OR military OR crisis)'},
-{name:'Global flashpoints',q:'("peace talks" OR ceasefire OR escalation OR "military alert" OR sanctions OR "airspace closed") (war OR conflict OR attack OR military)'}
+const regions = [
+  {name:'Middle East & Gulf', match:/iran|israel|gaza|palestin|lebanon|hezbollah|yemen|houthi|hormuz|red sea|syria|iraq|gulf/i},
+  {name:'Europe', match:/ukraine|russia|nato|europe|poland|baltic|belarus|moldova/i},
+  {name:'Africa', match:/sudan|sahel|somalia|ethiopia|congo|drc|mali|niger|burkina faso|nigeria|libya|mozambique|cameroon/i},
+  {name:'South & East Asia', match:/pakistan|india|myanmar|burma|taiwan|china|north korea|south korea|korean peninsula|south china sea|philippines|kashmir/i},
+  {name:'Americas', match:/haiti|mexico|colombia|venezuela|ecuador|brazil|peru|caribbean/i},
+  {name:'Global flashpoints', match:/ceasefire|peace talks|military alert|airspace closed|sanctions|escalation|global conflict/i}
 ];
-const highTerms=/missile|airstrike|air strike|drone attack|invasion|killed|dead|bombing|offensive|escalat|retaliat|mobiliz|casualt|civilian attack|troops/i;
-const trusted=['reuters.com','apnews.com','bbc.com','bbc.co.uk','aljazeera.com','theguardian.com','france24.com','dw.com','un.org','news.un.org','reliefweb.int','crisisgroup.org','acleddata.com','pbs.org','npr.org'];
-function domainOf(url){try{return new URL(url).hostname.replace(/^www\./,'')}catch(e){return ''}}
-function isTrusted(url){const d=domainOf(url);return trusted.some(x=>d===x||d.endsWith('.'+x))}
-function score(items){if(!items.length)return 0;const urgent=items.filter(x=>highTerms.test(x.title||'')).length;return Math.min(100,Math.round(Math.min(1,items.length/30)*55+Math.min(1,urgent/12)*45))}
-function fmtDate(s){if(!s)return 'Time not supplied';const d=new Date(s);return isNaN(d)?s:d.toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'})}
-function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-async function fetchRegion(r){const url='https://api.gdeltproject.org/api/v2/doc/doc?query='+encodeURIComponent(r.q)+'&mode=ArtList&maxrecords=30&format=json&sort=DateDesc&timespan=24h';const res=await fetch(url,{headers:{'Accept':'application/json'}});if(!res.ok)throw new Error('News index returned '+res.status);const data=await res.json();return (data.articles||[]).map(a=>({title:a.title,url:a.url,domain:a.domain||domainOf(a.url),date:a.seendate||a.datetime||a.date,region:r.name, trusted:isTrusted(a.url)})).filter(a=>a.title&&a.url&&/^https?:/.test(a.url))}
-function renderRegions(results){document.querySelectorAll('.region').forEach((el,i)=>{const items=results[i]||[];const n=score(items);el.querySelector('.score').textContent=n+'/100';el.querySelector('.level span').style.width=n+'%';el.querySelector('small').textContent=items.length?`${items.length} reports · ${n>=65?'Elevated media signal':n>=35?'Moderate media signal':'Lower media signal'}`:'No reports returned';})}
-function renderNews(items){const root=document.getElementById('news');if(!items.length){root.innerHTML='<div class="empty">No articles were returned. Try refresh or use the trusted source links above.</div>';return}root.innerHTML=items.slice(0,36).map(a=>`<article class="news"><div class="meta"><span class="tag ${highTerms.test(a.title)?'alert':'check'}">${highTerms.test(a.title)?'Priority signal':'Report'}</span><span>${escapeHTML(a.region)}</span><span>${escapeHTML(a.domain)}</span></div><h3><a href="${escapeHTML(a.url)}" target="_blank" rel="noopener">${escapeHTML(a.title)} ↗</a></h3><div class="meta"><span>${escapeHTML(fmtDate(a.date))}</span><span>${a.trusted?'Known newsroom/institution domain':'Publisher requires extra checking'}</span></div></article>`).join('')}
-async function refresh(){const btn=document.getElementById('refresh');btn.disabled=true;btn.textContent='↻ Checking…';document.getElementById('feedStatus').textContent='Fetching public news index…';document.getElementById('feedStatus').className='loading';try{const settled=await Promise.allSettled(regions.map(fetchRegion));const results=settled.map(x=>x.status==='fulfilled'?x.value:[]);const all=results.flat();const uniq=[...new Map(all.map(a=>[a.url,a])).values()].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));renderRegions(results);renderNews(uniq);document.getElementById('articleCount').textContent=uniq.length;document.getElementById('priorityCount').textContent=uniq.filter(a=>highTerms.test(a.title)).length;document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});const failures=settled.filter(x=>x.status==='rejected').length;document.getElementById('feedStatus').textContent=failures===0?'Live fetch completed':`${failures}/6 region queries unavailable`;document.getElementById('feedStatus').className=failures?'loading':'status';if(!uniq.length)document.getElementById('news').innerHTML='<div class="empty">The public news index did not return articles. This can happen because of network restrictions, browser CORS rules or temporary service issues. Use the trusted source links above; no sample headlines are being shown as live news.</div>'}catch(e){document.getElementById('feedStatus').textContent='Live feed unavailable';document.getElementById('feedStatus').className='loading';document.getElementById('news').innerHTML='<div class="empty">Could not retrieve fresh news: '+escapeHTML(e.message)+'. This may be a network or browser restriction. Use the trusted source links above; no fabricated headlines are shown.</div>'}finally{btn.disabled=false;btn.textContent='↻ Refresh intelligence'}}
-document.getElementById('refresh').addEventListener('click',refresh);refresh();
-</script></body></html>
+
+const query =
+ '(Iran OR Israel OR Gaza OR Lebanon OR Yemen OR Houthi OR Hormuz OR "Red Sea" OR Ukraine OR Russia OR Sudan OR Sahel OR Somalia OR Ethiopia OR Pakistan OR India OR Myanmar OR Taiwan OR "North Korea" OR "South China Sea" OR Haiti OR Mexico OR Colombia OR Venezuela OR "peace talks" OR ceasefire OR escalation OR sanctions) ' +
+ '(war OR attack OR strike OR missile OR drone OR conflict OR military OR fighting OR tension OR violence OR crisis OR ceasefire OR sanctions OR escalation)';
+
+const highTerms = /missile|airstrike|air strike|drone attack|invasion|killed|dead|bombing|offensive|escalat|retaliat|mobiliz|casualt|civilian attack|troops/i;
+
+const trusted = [
+ 'reuters.com','apnews.com','bbc.com','bbc.co.uk',
+ 'aljazeera.com','theguardian.com','france24.com','dw.com',
+ 'un.org','news.un.org','reliefweb.int','crisisgroup.org',
+ 'acleddata.com','pbs.org','npr.org'
+];
+
+let isLoading = false;
+
+function domainOf(url) {
+ try { return new URL(url).hostname.replace(/^www\./,''); }
+ catch(e) { return ''; }
+}
+
+function isTrusted(url) {
+ const d = domainOf(url);
+ return trusted.some(x => d === x || d.endsWith('.' + x));
+}
+
+function escapeHTML(s) {
+ return String(s || '').replace(/[&<>"']/g, c => ({
+  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[c]));
+}
+
+function fmtDate(s) {
+ if (!s) return 'Time not supplied';
+ const d = new Date(s);
+ return isNaN(d) ? s : d.toLocaleString([], {
+  dateStyle:'medium', timeStyle:'short'
+ });
+}
+
+function classify(article) {
+ const text = (article.title || '') + ' ' + (article.domain || '');
+ for (let i = 0; i < regions.length - 1; i++) {
+  if (regions[i].match.test(text)) return regions[i].name;
+ }
+ return 'Global flashpoints';
+}
+
+function score(items) {
+ if (!items.length) return 0;
+ const urgent = items.filter(x => highTerms.test(x.title || '')).length;
+ return Math.min(100, Math.round(
+  Math.min(1, items.length / 30) * 55 +
+  Math.min(1, urgent / 12) * 45
+ ));
+}
+
+function renderRegions(items) {
+ document.querySelectorAll('.region').forEach((el, i) => {
+  const regionName = regions[i].name;
+  const regionalItems = items.filter(a => a.region === regionName);
+  const n = score(regionalItems);
+
+  el.querySelector('.score').textContent = n + '/100';
+  el.querySelector('.level span').style.width = n + '%';
+
+  const small = el.querySelector('small');
+  small.textContent = regionalItems.length
+   ? `${regionalItems.length} reports · ${
+      n >= 65 ? 'Elevated media signal' :
+      n >= 35 ? 'Moderate media signal' :
+      'Lower media signal'
+     }`
+   : 'No matching reports returned';
+ });
+}
+
+function renderNews(items) {
+ const root = document.getElementById('news');
+
+ if (!items.length) {
+  root.innerHTML = '<div class="empty">No articles were returned for this search window. Try again later or use the trusted source links below. No sample headlines are being shown as live news.</div>';
+  return;
+ }
+
+ root.innerHTML = items.slice(0, 36).map(a => `
+  <article class="news">
+   <div class="meta">
+    <span class="tag ${highTerms.test(a.title) ? 'alert' : 'check'}">
+     ${highTerms.test(a.title) ? 'Priority signal' : 'Report'}
+    </span>
+    <span>${escapeHTML(a.region)}</span>
+    <span>${escapeHTML(a.domain)}</span>
+   </div>
+   <h3>
+    <a href="${escapeHTML(a.url)}" target="_blank" rel="noopener noreferrer">
+     ${escapeHTML(a.title)} ↗
+    </a>
+   </h3>
+   <div class="meta">
+    <span>${escapeHTML(fmtDate(a.date))}</span>
+    <span>${a.trusted
+     ? 'Recognized newsroom/institution domain'
+     : 'Publisher requires extra checking'}</span>
+   </div>
+  </article>
+ `).join('');
+}
+
+async function fetchNews() {
+ const url = 'https://api.gdeltproject.org/api/v2/doc/doc?query=' +
+  encodeURIComponent(query) +
+  '&mode=ArtList&maxrecords=100&format=json&sort=DateDesc&timespan=24h';
+
+ const controller = new AbortController();
+ const timeout = setTimeout(() => controller.abort(), 25000);
+
+ try {
+  const response = await fetch(url, {
+   signal: controller.signal,
+   headers: { 'Accept':'application/json' },
+   cache: 'no-store'
+  });
+
+  const body = await response.text();
+
+  if (!response.ok) {
+   throw new Error('News service returned HTTP ' + response.status);
+  }
+
+  let data;
+  try {
+   data = JSON.parse(body);
+  } catch(e) {
+   if (/limit requests|too many requests|rate limit/i.test(body)) {
+    throw new Error('GDELT rate limit reached. Wait at least 10 seconds, then retry.');
+   }
+   throw new Error('The news service did not return valid JSON. Try again later.');
+  }
+
+  if (!Array.isArray(data.articles)) {
+   throw new Error('The news service returned no usable article list.');
+  }
+
+  return data.articles
+   .filter(a => a.title && a.url && /^https?:\/\//i.test(a.url))
+   .map(a => {
+    const article = {
+     title: a.title,
+     url: a.url,
+     domain: a.domain || domainOf(a.url),
+     date: a.seendate || a.datetime || a.date || '',
+     trusted: isTrusted(a.url)
+    };
+    article.region = classify(article);
+    return article;
+   });
+
+ } finally {
+  clearTimeout(timeout);
+ }
+}
+
+async function refresh() {
+ if (isLoading) return;
+ isLoading = true;
+
+ const btn = document.getElementById('refresh');
+ const status = document.getElementById('feedStatus');
+ const news = document.getElementById('news');
+
+ btn.disabled = true;
+ btn.textContent = '↻ Checking…';
+ status.textContent = 'Requesting global news index…';
+ status.className = 'loading';
+
+ try {
+  // One combined query instead of six simultaneous requests.
+  const articles = await fetchNews();
+
+  const unique = [...new Map(
+   articles.map(a => [a.url, a])
+  ).values()].sort((a, b) => {
+   const da = new Date(a.date || 0).getTime() || 0;
+   const db = new Date(b.date || 0).getTime() || 0;
+   return db - da;
+  });
+
+  renderRegions(unique);
+  renderNews(unique);
+
+  document.getElementById('articleCount').textContent = unique.length;
+  document.getElementById('priorityCount').textContent =
+   unique.filter(a => highTerms.test(a.title)).length;
+
+  document.getElementById('lastUpdated').textContent =
+   new Date().toLocaleTimeString([], {
+    hour:'2-digit', minute:'2-digit'
+   });
+
+  status.textContent = 'Fetch completed · ' + unique.length + ' reports received';
+  status.className = 'status';
+
+  if (!unique.length) {
+   news.innerHTML = '<div class="empty">The search returned zero articles. This does not mean there are no conflicts. Try again later and consult the trusted source links.</div>';
+  }
+
+ } catch(e) {
+  status.textContent = 'Live feed unavailable';
+  status.className = 'loading';
+
+  const message = e.name === 'AbortError'
+   ? 'The news request timed out.'
+   : e.message || 'An unknown network error occurred.';
+
+  news.innerHTML = '<div class="empty"><b>Could not load live reports.</b><br>' +
+   escapeHTML(message) +
+   '<br><br>Wait at least 10 seconds before retrying. If the problem continues, the public service or browser network access may be unavailable. Use the trusted source links below. No fabricated headlines are displayed.</div>';
+
+  document.getElementById('articleCount').textContent = '—';
+  document.getElementById('priorityCount').textContent = '—';
+
+ } finally {
+  isLoading = false;
+  btn.disabled = false;
+  btn.textContent = '↻ Refresh intelligence';
+ }
+}
+
+document.getElementById('refresh').addEventListener('click', refresh);
+refresh();
+</script>
+/body></html>
