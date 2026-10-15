@@ -1,286 +1,413 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#08111f">
 <title>Global Conflict Intelligence</title>
+
 <style>
-:root{--bg:#07101d;--panel:#101d2d;--panel2:#14253a;--line:#263b53;--text:#eef5ff;--muted:#a7b8cb;--cyan:#58d5e8;--gold:#ffc66d;--red:#ff7777;--green:#71ddb1}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#122b43 0,#07101d 48%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}a{color:#8fe5f0;text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:1240px;margin:auto;padding:22px}.top{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.brand{display:flex;gap:13px;align-items:center}.logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#4dd4e8,#3d6dba);display:grid;place-items:center;font-size:25px;box-shadow:0 8px 30px #2caec433}.eyebrow{color:var(--cyan);letter-spacing:.16em;text-transform:uppercase;font-size:11px;font-weight:800}.brand h1{font-size:clamp(22px,4vw,35px);letter-spacing:.02em;margin:2px 0}.sub{color:var(--muted);margin:0}.controls{display:flex;gap:9px;flex-wrap:wrap}button,.pill{border:1px solid var(--line);background:#13243a;color:var(--text);border-radius:10px;padding:10px 13px;font-weight:650;cursor:pointer}button:hover{border-color:var(--cyan)}.hero{margin:23px 0 16px;padding:24px;border:1px solid #2c526b;border-radius:20px;background:linear-gradient(120deg,#102b40,#111c30 68%,#251e2c);position:relative;overflow:hidden}.hero:after{content:'◎';position:absolute;right:25px;top:-25px;font-size:150px;color:#58d5e80b}.hero h2{margin:0 0 7px;font-size:clamp(20px,3vw,28px)}.hero p{margin:0;color:#c1d2e3;max-width:820px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}.stat,.card{border:1px solid var(--line);border-radius:16px;background:linear-gradient(160deg,#122237,#0d1929);padding:17px;min-width:0}.stat .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.stat strong{display:block;font-size:27px;margin:5px 0}.stat small{color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin:27px 0 12px}.section-head h2{margin:0;font-size:20px}.section-head p{margin:3px 0 0;color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.region h3{margin:0 0 6px;font-size:17px}.region .region-meta{font-size:12px;color:var(--muted);margin-bottom:12px}.level{height:7px;background:#26384c;border-radius:9px;overflow:hidden;margin:10px 0}.level span{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ed9be,#ffd06c,#ff7777);transition:width .4s}.region .score{font-size:25px;font-weight:800}.news-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.news{padding:15px;border:1px solid var(--line);background:#0e1a2a;border-radius:14px;overflow-wrap:anywhere}.news h3{font-size:15px;line-height:1.4;margin:8px 0}.meta{color:var(--muted);font-size:12px;display:flex;gap:8px;flex-wrap:wrap}.tag{font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;border-radius:5px;padding:3px 6px;background:#19374a;color:#8fe5f0}.tag.alert{background:#46252d;color:#ffadad}.tag.check{background:#183a31;color:#94edc7}.empty{color:var(--muted);padding:18px;border:1px dashed var(--line);border-radius:12px}.two{display:grid;grid-template-columns:1.25fr .75fr;gap:13px}.sources{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.source{padding:14px;border:1px solid var(--line);border-radius:12px;background:#0d1928}.source b{display:block;margin-bottom:4px}.source small{color:var(--muted)}.video-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.video{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#101e30}.video img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;background:#13263c}.video div{padding:13px}.video p{color:var(--muted);font-size:12px;margin:5px 0}.notice{border-left:3px solid var(--gold);background:#241f18;color:#f5d9a8;padding:13px 15px;border-radius:0 10px 10px 0;font-size:13px}.foot{margin:28px 0 4px;border-top:1px solid var(--line);padding-top:15px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px}.credit{color:#7e94ab}.status{color:var(--green)}.loading{color:var(--muted)}.updated{font-variant-numeric:tabular-nums}
-@media(max-width:850px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.sources{grid-template-columns:repeat(2,minmax(0,1fr))}.video-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.wrap{padding:14px}.grid,.news-list,.sources,.video-grid{grid-template-columns:1fr}.stat{padding:13px}.hero{padding:18px}.top{align-items:flex-start}.controls{width:100%}.controls button{flex:1}}
+:root{
+  --bg:#07101d;
+  --panel:#101d2d;
+  --panel2:#14253a;
+  --line:#263b53;
+  --text:#eef5ff;
+  --muted:#9aabc1;
+  --accent:#55b7ff;
+  --red:#ff5f6d;
+  --yellow:#ffcb69;
+  --green:#52d6a0;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+header{
+  padding:25px 18px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(135deg,#10253c,#08111f);
+}
+.wrap{max-width:1200px;margin:auto}
+.eyebrow{
+  color:var(--accent);
+  font-size:11px;
+  letter-spacing:2px;
+  font-weight:bold;
+}
+h1{font-size:clamp(25px,5vw,40px);margin:10px 0}
+.subtitle{color:var(--muted);line-height:1.6}
+main{max-width:1200px;margin:auto;padding:18px}
+.toolbar{
+  display:flex;gap:10px;flex-wrap:wrap;
+  align-items:center;margin:16px 0;
+}
+button,select{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  color:var(--text);
+  padding:11px 14px;
+  border-radius:9px;
+  font-size:14px;
+}
+button{cursor:pointer}
+button:hover{border-color:var(--accent)}
+#status{font-size:12px;color:var(--muted)}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:13px;
+}
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:17px;
+  min-width:0;
+}
+.card h2,.card h3{margin:0 0 12px}
+.metric{
+  font-size:32px;font-weight:bold;
+  margin:12px 0 6px;
+}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.section-title{margin:28px 0 13px;font-size:20px}
+.bar{
+  height:7px;background:#22344a;
+  border-radius:10px;overflow:hidden;margin-top:12px;
+}
+.bar span{display:block;height:100%;background:var(--accent)}
+.news-list{display:grid;gap:12px}
+.news{
+  background:var(--panel);
+  border:1px solid var(--line);
+  padding:16px;border-radius:12px;
+}
+.news a{
+  color:var(--text);text-decoration:none;
+  font-weight:bold;line-height:1.5;
+}
+.news a:hover{color:var(--accent)}
+.meta{color:var(--muted);font-size:12px;margin-top:9px}
+.tag{
+  display:inline-block;padding:4px 8px;
+  border-radius:6px;background:#1b3047;
+  color:#8dcfff;font-size:11px;margin-bottom:9px;
+}
+.error{color:var(--yellow)}
+footer{
+  text-align:center;color:var(--muted);
+  padding:28px 15px;border-top:1px solid var(--line);
+  margin-top:35px;font-size:12px;
+}
+@media(max-width:600px){
+  main{padding:12px}
+  header{padding:22px 14px}
+  .metric{font-size:28px}
+}
 </style>
 </head>
-<body><main class="wrap">
-<header class="top"><div class="brand"><div class="logo">◎</div><div><div class="eyebrow">Open-source monitoring dashboard</div><h1>GLOBAL CONFLICT INTELLIGENCE</h1><p class="sub">World events · Conflict analysis · Strategic risk</p></div></div><div class="controls"><button id="refresh">↻ Refresh intelligence</button><a class="pill" href="https://www.reuters.com/world/" target="_blank" rel="noopener">Reuters World ↗</a></div></header>
-<section class="hero"><div class="eyebrow">Global situation overview</div><h2>Understand what is happening — and what it could mean</h2><p>Track conflict-related reporting across regions, compare signals over time, and open original reporting from the source. This dashboard is an information aid, not an official warning system or a prediction of war.</p></section>
-<section class="stats"><div class="stat"><div class="label">Articles found</div><strong id="articleCount">—</strong><small>In the current search window</small></div><div class="stat"><div class="label">High-priority signals</div><strong id="priorityCount">—</strong><small>Keyword-based screening only</small></div><div class="stat"><div class="label">Coverage regions</div><strong>6</strong><small>Global, not exhaustive</small></div><div class="stat"><div class="label">Last checked</div><strong class="updated" id="lastUpdated" style="font-size:17px">Not yet checked</strong><small id="feedStatus" class="loading">Waiting for refresh</small></div></section>
-<div class="section-head"><div><h2>Regional conflict signals</h2><p>0–100 media signal index · not a verified measure of battlefield intensity</p></div><span class="tag">Rule-based estimate</span></div><section id="regions" class="grid">
-<div class="card region"><h3>Middle East & Gulf</h3><div class="region-meta">Iran · Israel · Gulf · Yemen · Red Sea</div><div class="score">—</div><div class="level"><span></span></div><small class="loading">Loading reports…</small></div>
-<div class="card region"><h3>Europe</h3><div class="region-meta">Ukraine · Russia · European security</div><div class="score">—</div><div class="level"><span></span></div><small class="loading">Loading reports…</small></div>
-<div class="card region"><h3>Africa</h3><div class="region-meta">Sudan · Sahel · Horn of Africa · DRC</div><div class="score">—</div><div class="level"><span></span></div><small class="loading">Loading reports…</small></div>
-<div class="card region"><h3>South & East Asia</h3><div class="region-meta">Pakistan · India · Myanmar · Korean Peninsula</div><div class="score">—</div><div class="level"><span></span></div><small class="loading">Loading reports…</small></div>
-<div class="card region"><h3>Americas</h3><div class="region-meta">Haiti · organized violence · regional tensions</div><div class="score">—</div><div class="level"><span></span></div><small class="loading">Loading reports…</small></div>
-<div class="card region"><h3>Global flashpoints</h3><div class="region-meta">Military alerts · sanctions · peace talks · escalation</div><div class="score">—</div><div class="level"><span></span></div><small class="loading">Loading reports…</small></div>
-</section>
-<div class="section-head"><div><h2>Latest reports</h2><p>Open each item to read the publisher's original report. Headlines are not independently verified by this page.</p></div><span class="tag check">Source links included</span></div><section id="news" class="news-list"><div class="empty">Connecting to public news index…</div></section>
-<div class="section-head"><div><h2>Major issue watch</h2><p>Important topics to watch alongside breaking headlines.</p></div></div><section class="two"><div class="card"><h3 style="margin-top:0">Strategic watchlist</h3><ul style="padding-left:19px;color:#c5d5e5"><li><b>Energy & shipping:</b> Strait of Hormuz, Bab el-Mandeb, Red Sea and oil supply.</li><li><b>Civilian protection:</b> attacks on civilians, hospitals, schools and displacement.</li><li><b>Diplomacy:</b> ceasefire talks, negotiations, mediation and breakdowns.</li><li><b>Regional spillover:</b> cross-border strikes, airspace closures and military mobilization.</li><li><b>Economic effects:</b> oil prices, trade routes, sanctions and transport disruption.</li></ul></div><div class="card"><h3 style="margin-top:0">How to read the index</h3><p style="color:#c5d5e5">The 0–100 score is calculated from the volume of matching reports and escalation-related terms in the returned headlines. More coverage can mean more events, but it can also mean more media attention.</p><p style="color:#c5d5e5">Use it to notice changes, not as a probability of war. Compare several days and read the linked sources before drawing conclusions.</p><div class="notice">Breaking reports may change. Casualty figures, responsibility claims, and battlefield statements can be disputed or revised.</div></div></section>
-<div class="section-head"><div><h2>Trusted starting points</h2><p>Check multiple independent sources and primary institutions.</p></div></div><section class="sources">
-<a class="source" href="https://www.reuters.com/world/" target="_blank" rel="noopener"><b>Reuters World ↗</b><small>International reporting and updates</small></a>
-<a class="source" href="https://apnews.com/world-news" target="_blank" rel="noopener"><b>Associated Press ↗</b><small>Independent news coverage</small></a>
-<a class="source" href="https://www.bbc.com/news/world" target="_blank" rel="noopener"><b>BBC World ↗</b><small>Global coverage and explainers</small></a>
-<a class="source" href="https://news.un.org/" target="_blank" rel="noopener"><b>UN News ↗</b><small>United Nations and humanitarian updates</small></a>
-<a class="source" href="https://acleddata.com/" target="_blank" rel="noopener"><b>ACLED ↗</b><small>Conflict event data and methodology</small></a>
-<a class="source" href="https://www.crisisgroup.org/" target="_blank" rel="noopener"><b>International Crisis Group ↗</b><small>Conflict analysis and policy research</small></a>
-</section>
-<div class="section-head"><div><h2>Video briefings</h2><p>Open video searches from established newsrooms; check upload date and original source.</p></div></div><section class="video-grid">
-<a class="video" href="https://www.youtube.com/results?search_query=Reuters+World+News+latest+conflict" target="_blank" rel="noopener"><img alt="World news video search" src="https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=800&q=80"><div><b>Reuters — World updates ↗</b><p>Latest reporting and video coverage</p></div></a>
-<a class="video" href="https://www.youtube.com/results?search_query=AP+News+world+conflict+latest" target="_blank" rel="noopener"><img alt="International news video search" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80"><div><b>AP News — Global coverage ↗</b><p>Video reports and explainers</p></div></a>
-<a class="video" href="https://www.youtube.com/results?search_query=BBC+News+global+conflict+analysis" target="_blank" rel="noopener"><img alt="News analysis video search" src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=800&q=80"><div><b>BBC — Analysis & explainers ↗</b><p>Background, context and interviews</p></div></a>
-</section>
-<div class="section-head"><div><h2>Verification checklist</h2><p>A simple standard for reading reports responsibly.</p></div></div><section class="card"><ol style="padding-left:20px;color:#c5d5e5;margin:0"><li>Check the original publisher, author and publication time.</li><li>Look for confirmation from a second independent newsroom or primary institution.</li><li>Separate confirmed facts from claims by governments, militaries or armed groups.</li><li>For images/videos, check the original upload, location, date and possible reuse from older events.</li><li>If sources disagree, mark the issue as disputed rather than choosing the most dramatic claim.</li></ol></section>
-<footer class="foot"><span>Data discovery: GDELT public news index · automatic fetch may be unavailable at times.</span><span class="credit">Created by Fasil Adattil</span></footer>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">OPEN-SOURCE CONFLICT MONITOR</div>
+    <h1>GLOBAL CONFLICT INTELLIGENCE</h1>
+    <div class="subtitle">
+      Global conflict news monitoring dashboard<br>
+      Independent media monitoring · Public news sources
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <button id="refreshBtn" onclick="loadNews(true)">↻ Refresh News</button>
+    <select id="regionFilter" onchange="renderNews()">
+      <option value="All">All Regions</option>
+      <option value="Middle East">Middle East</option>
+      <option value="Europe">Europe</option>
+      <option value="Asia-Pacific">Asia-Pacific</option>
+      <option value="Africa">Africa</option>
+      <option value="Americas">Americas</option>
+      <option value="Other">Other</option>
+    </select>
+    <span id="status" aria-live="polite">Ready to connect</span>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="muted">ARTICLES LOADED</div>
+      <div class="metric" id="articleCount">—</div>
+      <div class="muted">Articles returned by the news service</div>
+    </section>
+    <section class="card">
+      <div class="muted">LAST SUCCESSFUL UPDATE</div>
+      <div class="metric" id="lastUpdated" style="font-size:20px">Not yet</div>
+      <div class="muted">Time shown in your browser's local timezone</div>
+    </section>
+    <section class="card">
+      <div class="muted">DATA PROVIDER</div>
+      <div class="metric" style="font-size:23px">GDELT</div>
+      <div class="muted">Global news monitoring database</div>
+    </section>
+  </div>
+
+  <h2 class="section-title">Regional Media Signals</h2>
+  <div class="grid" id="regions"></div>
+
+  <h2 class="section-title">Latest Conflict News</h2>
+  <p class="muted">
+    Headlines are collected from GDELT. A media signal is not a confirmed
+    measure of military activity or conflict severity.
+  </p>
+  <div id="newsList" class="news-list">
+    <div class="card muted">Press “Refresh News” to load recent articles.</div>
+  </div>
 </main>
 
+<footer>
+  GLOBAL CONFLICT INTELLIGENCE · Created by Fasil Adattil<br>
+  <span>Independent information dashboard · Verify important reports with original sources</span>
+</footer>
+
 <script>
-const regions = [
-  {name:'Middle East & Gulf', match:/iran|israel|gaza|palestin|lebanon|hezbollah|yemen|houthi|hormuz|red sea|syria|iraq|gulf/i},
-  {name:'Europe', match:/ukraine|russia|nato|europe|poland|baltic|belarus|moldova/i},
-  {name:'Africa', match:/sudan|sahel|somalia|ethiopia|congo|drc|mali|niger|burkina faso|nigeria|libya|mozambique|cameroon/i},
-  {name:'South & East Asia', match:/pakistan|india|myanmar|burma|taiwan|china|north korea|south korea|korean peninsula|south china sea|philippines|kashmir/i},
-  {name:'Americas', match:/haiti|mexico|colombia|venezuela|ecuador|brazil|peru|caribbean/i},
-  {name:'Global flashpoints', match:/ceasefire|peace talks|military alert|airspace closed|sanctions|escalation|global conflict/i}
+"use strict";
+
+const GDELT_API =
+  "https://api.gdeltproject.org/api/v2/doc/doc";
+
+const SEARCH_QUERY =
+  '(war OR conflict OR airstrike OR missile OR military OR ceasefire OR attack OR troops)';
+
+const REFRESH_INTERVAL = 5 * 60 * 1000;
+const MIN_REQUEST_GAP = 5000;
+
+const REGIONS = [
+  "Middle East",
+  "Europe",
+  "Asia-Pacific",
+  "Africa",
+  "Americas",
+  "Other"
 ];
 
-const query =
- '(Iran OR Israel OR Gaza OR Lebanon OR Yemen OR Houthi OR Hormuz OR "Red Sea" OR Ukraine OR Russia OR Sudan OR Sahel OR Somalia OR Ethiopia OR Pakistan OR India OR Myanmar OR Taiwan OR "North Korea" OR "South China Sea" OR Haiti OR Mexico OR Colombia OR Venezuela OR "peace talks" OR ceasefire OR escalation OR sanctions) ' +
- '(war OR attack OR strike OR missile OR drone OR conflict OR military OR fighting OR tension OR violence OR crisis OR ceasefire OR sanctions OR escalation)';
+let articles = [];
+let lastRequestTime = 0;
+let lastSuccessfulUpdate = null;
+let loading = false;
 
-const highTerms = /missile|airstrike|air strike|drone attack|invasion|killed|dead|bombing|offensive|escalat|retaliat|mobiliz|casualt|civilian attack|troops/i;
+const $ = id => document.getElementById(id);
 
-const trusted = [
- 'reuters.com','apnews.com','bbc.com','bbc.co.uk',
- 'aljazeera.com','theguardian.com','france24.com','dw.com',
- 'un.org','news.un.org','reliefweb.int','crisisgroup.org',
- 'acleddata.com','pbs.org','npr.org'
-];
-
-let isLoading = false;
-
-function domainOf(url) {
- try { return new URL(url).hostname.replace(/^www\./,''); }
- catch(e) { return ''; }
+function setStatus(message, isError=false) {
+  $("status").textContent = message;
+  $("status").className = isError ? "error" : "";
 }
 
-function isTrusted(url) {
- const d = domainOf(url);
- return trusted.some(x => d === x || d.endsWith('.' + x));
-}
+function classifyRegion(article) {
+  const text = (
+    (article.title || "") + " " +
+    (article.domain || "") + " " +
+    (article.sourcecountry || "")
+  ).toLowerCase();
 
-function escapeHTML(s) {
- return String(s || '').replace(/[&<>"']/g, c => ({
-  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
- }[c]));
-}
+  const groups = {
+    "Middle East": [
+      "iran","israel","gaza","palestine","lebanon","hezbollah",
+      "houthi","yemen","syria","iraq","tehran","jerusalem",
+      "saudi arabia","uae","united arab emirates","hormuz",
+      "red sea","jordan","qatar","bahrain","oman","kuwait"
+    ],
+    "Europe": [
+      "ukraine","russia","nato","moscow","kyiv","crimea",
+      "poland","france","germany","britain","united kingdom",
+      "baltic","black sea","europe"
+    ],
+    "Asia-Pacific": [
+      "china","taiwan","north korea","south korea","japan",
+      "philippines","south china sea","india","pakistan",
+      "afghanistan","myanmar","burma","kashmir"
+    ],
+    "Africa": [
+      "sudan","somalia","sahel","mali","niger","chad",
+      "nigeria","ethiopia","eritrea","congo","libya",
+      "mozambique","cameroon","burkina faso"
+    ],
+    "Americas": [
+      "united states","u.s.","america","venezuela","colombia",
+      "mexico","haiti","cuba","brazil","canada"
+    ]
+  };
 
-function fmtDate(s) {
- if (!s) return 'Time not supplied';
- const d = new Date(s);
- return isNaN(d) ? s : d.toLocaleString([], {
-  dateStyle:'medium', timeStyle:'short'
- });
-}
-
-function classify(article) {
- const text = (article.title || '') + ' ' + (article.domain || '');
- for (let i = 0; i < regions.length - 1; i++) {
-  if (regions[i].match.test(text)) return regions[i].name;
- }
- return 'Global flashpoints';
-}
-
-function score(items) {
- if (!items.length) return 0;
- const urgent = items.filter(x => highTerms.test(x.title || '')).length;
- return Math.min(100, Math.round(
-  Math.min(1, items.length / 30) * 55 +
-  Math.min(1, urgent / 12) * 45
- ));
-}
-
-function renderRegions(items) {
- document.querySelectorAll('.region').forEach((el, i) => {
-  const regionName = regions[i].name;
-  const regionalItems = items.filter(a => a.region === regionName);
-  const n = score(regionalItems);
-
-  el.querySelector('.score').textContent = n + '/100';
-  el.querySelector('.level span').style.width = n + '%';
-
-  const small = el.querySelector('small');
-  small.textContent = regionalItems.length
-   ? `${regionalItems.length} reports · ${
-      n >= 65 ? 'Elevated media signal' :
-      n >= 35 ? 'Moderate media signal' :
-      'Lower media signal'
-     }`
-   : 'No matching reports returned';
- });
-}
-
-function renderNews(items) {
- const root = document.getElementById('news');
-
- if (!items.length) {
-  root.innerHTML = '<div class="empty">No articles were returned for this search window. Try again later or use the trusted source links below. No sample headlines are being shown as live news.</div>';
-  return;
- }
-
- root.innerHTML = items.slice(0, 36).map(a => `
-  <article class="news">
-   <div class="meta">
-    <span class="tag ${highTerms.test(a.title) ? 'alert' : 'check'}">
-     ${highTerms.test(a.title) ? 'Priority signal' : 'Report'}
-    </span>
-    <span>${escapeHTML(a.region)}</span>
-    <span>${escapeHTML(a.domain)}</span>
-   </div>
-   <h3>
-    <a href="${escapeHTML(a.url)}" target="_blank" rel="noopener noreferrer">
-     ${escapeHTML(a.title)} ↗
-    </a>
-   </h3>
-   <div class="meta">
-    <span>${escapeHTML(fmtDate(a.date))}</span>
-    <span>${a.trusted
-     ? 'Recognized newsroom/institution domain'
-     : 'Publisher requires extra checking'}</span>
-   </div>
-  </article>
- `).join('');
-}
-
-async function fetchNews() {
- const url = 'https://api.gdeltproject.org/api/v2/doc/doc?query=' +
-  encodeURIComponent(query) +
-  '&mode=ArtList&maxrecords=100&format=json&sort=DateDesc&timespan=24h';
-
- const controller = new AbortController();
- const timeout = setTimeout(() => controller.abort(), 25000);
-
- try {
-  const response = await fetch(url, {
-   signal: controller.signal,
-   headers: { 'Accept':'application/json' },
-   cache: 'no-store'
-  });
-
-  const body = await response.text();
-
-  if (!response.ok) {
-   throw new Error('News service returned HTTP ' + response.status);
+  for (const region of REGIONS) {
+    if (region === "Other") continue;
+    if (groups[region].some(keyword => text.includes(keyword))) {
+      return region;
+    }
   }
 
-  let data;
+  return "Other";
+}
+
+function safeDate(value) {
+  if (!value || !/^\d{14}$/.test(value)) return null;
+
+  const iso =
+    value.slice(0,4) + "-" +
+    value.slice(4,6) + "-" +
+    value.slice(6,8) + "T" +
+    value.slice(8,10) + ":" +
+    value.slice(10,12) + ":" +
+    value.slice(12,14) + "Z";
+
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function formatDate(value) {
+  const date = safeDate(value);
+  if (!date) return "Date unavailable";
+
+  return date.toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+}
+
+function safeHost(url) {
   try {
-   data = JSON.parse(body);
-  } catch(e) {
-   if (/limit requests|too many requests|rate limit/i.test(body)) {
-    throw new Error('GDELT rate limit reached. Wait at least 10 seconds, then retry.');
-   }
-   throw new Error('The news service did not return valid JSON. Try again later.');
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "News source";
   }
-
-  if (!Array.isArray(data.articles)) {
-   throw new Error('The news service returned no usable article list.');
-  }
-
-  return data.articles
-   .filter(a => a.title && a.url && /^https?:\/\//i.test(a.url))
-   .map(a => {
-    const article = {
-     title: a.title,
-     url: a.url,
-     domain: a.domain || domainOf(a.url),
-     date: a.seendate || a.datetime || a.date || '',
-     trusted: isTrusted(a.url)
-    };
-    article.region = classify(article);
-    return article;
-   });
-
- } finally {
-  clearTimeout(timeout);
- }
 }
 
-async function refresh() {
- if (isLoading) return;
- isLoading = true;
+function renderRegions() {
+  const counts = Object.fromEntries(REGIONS.map(r => [r, 0]));
 
- const btn = document.getElementById('refresh');
- const status = document.getElementById('feedStatus');
- const news = document.getElementById('news');
+  for (const article of articles) {
+    counts[article.region] = (counts[article.region] || 0) + 1;
+  }
 
- btn.disabled = true;
- btn.textContent = '↻ Checking…';
- status.textContent = 'Requesting global news index…';
- status.className = 'loading';
+  const total = articles.length;
 
- try {
-  // One combined query instead of six simultaneous requests.
-  const articles = await fetchNews();
+  $("regions").innerHTML = REGIONS.map(region => {
+    const count = counts[region] || 0;
+    const percent = total ? Math.round(count / total * 100) : 0;
 
-  const unique = [...new Map(
-   articles.map(a => [a.url, a])
-  ).values()].sort((a, b) => {
-   const da = new Date(a.date || 0).getTime() || 0;
-   const db = new Date(b.date || 0).getTime() || 0;
-   return db - da;
+    return `
+      <section class="card">
+        <h3>${region}</h3>
+        <div class="metric">${count}</div>
+        <div class="muted">${percent}% of loaded articles</div>
+        <div class="bar"><span style="width:${percent}%"></span></div>
+      </section>
+    `;
+  }).join("");
+}
+
+function renderNews() {
+  const filter = $("regionFilter").value;
+
+  const filtered = articles.filter(article =>
+    filter === "All" || article.region === filter
+  );
+
+  $("articleCount").textContent = articles.length;
+  renderRegions();
+
+  if (!filtered.length) {
+    $("newsList").innerHTML = `
+      <div class="card muted">
+        ${articles.length
+          ? "No articles match this region filter."
+          : "No articles loaded yet. Try refreshing later."}
+      </div>
+    `;
+    return;
+  }
+
+  $("newsList").innerHTML = filtered.map(article => {
+    const title = escapeHTML(article.title || "Untitled article");
+    const url = safeArticleURL(article.url);
+    const source = escapeHTML(safeHost(url));
+    const date = escapeHTML(formatDate(article.seendate));
+
+    return `
+      <article class="news">
+        <div class="tag">${escapeHTML(article.region)}</div><br>
+        <a href="${url}" target="_blank" rel="noopener noreferrer">
+          ${title}
+        </a>
+        <div class="meta">${source} · ${date}</div>
+      </article>
+    `;
+  }).join("");
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function safeArticleURL(value) {
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") {
+      return escapeHTML(parsed.href);
+    }
+  } catch {}
+  return "https://www.gdeltproject.org/";
+}
+
+async function loadNews(manual=false) {
+  if (loading) {
+    if (manual) setStatus("A news request is already running.");
+    return;
+  }
+
+  const elapsed = Date.now() - lastRequestTime;
+  if (lastRequestTime && elapsed < MIN_REQUEST_GAP) {
+    if (manual) {
+      const wait = Math.ceil((MIN_REQUEST_GAP - elapsed) / 1000);
+      setStatus(`Please wait ${wait} seconds before refreshing.`);
+    }
+    return;
+  }
+
+  loading = true;
+  lastRequestTime = Date.now();
+  $("refreshBtn").disabled = true;
+  $("refreshBtn").textContent = "Loading…";
+  setStatus("Connecting to GDELT news service…");
+
+  const params = new URLSearchParams({
+    query: SEARCH_QUERY,
+    mode: "ArtList",
+    format: "json",
+    maxrecords: "75",
+    sort: "DateDesc"
   });
 
-  renderRegions(unique);
-  renderNews(unique);
+  const endpoint = `${GDELT_API}?${params.toString()}`;
+  let success = false;
 
-  document.getElementById('articleCount').textContent = unique.length;
-  document.getElementById('priorityCount').textContent =
-   unique.filter(a => highTerms.test(a.title)).length;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
 
-  document.getElementById('lastUpdated').textContent =
-   new Date().toLocaleTimeString([], {
-    hour:'2-digit', minute:'2-digit'
-   });
-
-  status.textContent = 'Fetch completed · ' + unique.length + ' reports received';
-  status.className = 'status';
-
-  if (!unique.length) {
-   news.innerHTML = '<div class="empty">The search returned zero articles. This does not mean there are no conflicts. Try again later and consult the trusted source links.</div>';
-  }
-
- } catch(e) {
-  status.textContent = 'Live feed unavailable';
-  status.className = 'loading';
-
-  const message = e.name === 'AbortError'
-   ? 'The news request timed out.'
-   : e.message || 'An unknown network error occurred.';
-
-  news.innerHTML = '<div class="empty"><b>Could not load live reports.</b><br>' +
-   escapeHTML(message) +
-   '<br><br>Wait at least 10 seconds before retrying. If the problem continues, the public service or browser network access may be unavailable. Use the trusted source links below. No fabricated headlines are displayed.</div>';
-
-  document.getElementById('articleCount').textContent = '—';
-  document.getElementById('priorityCount').textContent = '—';
-
- } finally {
-  isLoading = false;
-  btn.disabled = false;
-  btn.textContent = '↻ Refresh intelligence';
- }
-}
-
-document.getElementById('refresh').addEventListener('click', refresh);
-refresh();
-</script>
-</body></html>
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        method: "GET",
+        headers: { "Accept": "application/json" },
+        signal: controller.signal,
+        cache: "
