@@ -210,7 +210,7 @@ border-top:1px solid var(--line);margin-top:30px;padding-top:16px;color:var(--mu
 <section class="section">
  <div class="section-head">
   <div><h2>📰 Latest Global Reports</h2>
-  <p>Headlines, available news photos, publisher, time and direct article links</p></div>
+  <p>Selected RSS headlines, publisher, time and original report links</p></div>
   <select id="filter">
    <option value="all">All regions</option>
    <option value="Middle East & Gulf">Middle East & Gulf</option>
@@ -503,7 +503,7 @@ fetchNews=async function(){
   if(!r.ok||!Array.isArray(data.articles))throw Error(data.error||'Worker HTTP '+r.status);
   return data.articles.filter(a=>a.title&&!/%AutoEntityLabel\s*:/i.test(a.title)&&/^https?:\/\//i.test(a.url)).map(a=>({...a,
    domain:a.domain||domain(a.url),date:a.seendate||a.date||'',image:'',
-   trusted:isTrusted(a.url),region:classify(a)}));
+   trusted:isTrusted(a.url),region:regions.some(r=>r.name===a.region)?a.region:classify(a)}));
  }finally{clearTimeout(timer)}
 };
 renderNews=function(items){
@@ -532,7 +532,7 @@ refresh=async function(){
   const degraded=rssMetadata.stale||rssMetadata.status!=='ok';
   $('feedStatus').textContent=degraded?'Partial or stale RSS snapshot':'RSS snapshot available';
   $('liveLabel').textContent=degraded?'PARTIAL / STALE RSS DATA':'SCHEDULED RSS SNAPSHOT';
-  $('connection').textContent=`${allArticles.length} headlines from selected RSS feeds, up to 7 days old. `+
+  $('connection').textContent=`${allArticles.length} headlines from selected RSS feeds, including dedicated Middle East coverage, up to 7 days old. `+
    `Last provider check: ${fmt(rssMetadata.updatedAt)}. `+
    (degraded?'Some sources failed or are stale. ':'')+
    'Refresh reads the cache; providers are checked every 30 minutes. Coverage differs from the former GDELT feed.';
