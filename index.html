@@ -565,5 +565,212 @@ rssOldButton.replaceWith(rssNewButton);rssNewButton.addEventListener('click',()=
 refresh();
 
 </script>
+<script>
+// Headline monitoring is deliberately separate from an official threat assessment.
+(() => {
+ const section=document.createElement('section');section.className='section';section.id='threatWatch';
+ section.innerHTML=`<div class="section-head"><div><h2>Global & UAE Threat Watch</h2><p>Headline monitoring and official advisory links</p></div></div>
+ <div class="grid2"><div class="panel"><div class="region-top"><h3>Global threat watch</h3><span class="badge medium">NOT VERIFIED</span></div><p><b>Official threat level:</b> <span>Not assessed</span></p><p class="muted" id="globalWatchData">Waiting for news data</p><a href="https://www.gov.uk/foreign-travel-advice" target="_blank" rel="noopener noreferrer">Country travel advice (UK government) ↗</a></div>
+ <div class="panel"><div class="region-top"><h3>UAE threat watch</h3><span class="badge medium">NOT VERIFIED</span></div><p><b>Official threat level:</b> <span>Not assessed</span></p><p class="muted" id="uaeWatchData">Waiting for news data</p><p><a href="https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies" target="_blank" rel="noopener noreferrer">UAE official emergency guidance ↗</a></p><a href="https://www.mofa.gov.ae/en/warnings" target="_blank" rel="noopener noreferrer">UAE MoFA travel warnings ↗</a></div></div>
+ <p class="notice">These are headline counts, not a war probability or an official safety rating. Advisory links must be opened to check their latest guidance; they are not automatically verified here.</p>
+ <details class="panel" style="margin-top:12px"><summary style="cursor:pointer">News source health</summary><p class="muted">Provider checks show feed availability, not independent verification of every report.</p><div id="sourceHealth" style="display:grid;gap:8px"></div></details>`;
+ document.querySelector('.metrics').after(section);
+ function update(){
+  const data=typeof rssMetadata==='object'&&rssMetadata,items=typeof allArticles!=='undefined'?allArticles:[];
+  const ok=data&&data.status==='ok'&&!data.stale&&items.length;
+  if(!ok){document.getElementById('globalWatchData').textContent='Insufficient fresh coverage for a current assessment.';document.getElementById('uaeWatchData').textContent='Insufficient fresh coverage for a current assessment.';}
+  else{
+   const escalations=items.filter(a=>urgent.test(a.title)).length;
+   const direct=items.filter(a=>/\b(UAE|United Arab Emirates|Dubai|Abu Dhabi|Sharjah|Fujairah)\b/i.test(a.title)).length;
+   const regional=items.filter(a=>/\b(Iran|Hormuz|Gulf|Red Sea|Houthi|Saudi Arabia|Yemen|airspace|tanker)\b/i.test(a.title)).length;
+   document.getElementById('globalWatchData').textContent=`${items.length} reports in this snapshot; ${escalations} match escalation keywords.`;
+   document.getElementById('uaeWatchData').textContent=`${direct} headlines directly mention UAE locations; ${regional} mention nearby regions or transport routes. These groups may overlap.`;
+  }
+  const health=document.getElementById('sourceHealth');health.replaceChildren();
+  for(const source of data?.sources||[]){const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px';
+   const name=document.createElement('span');name.textContent=source.id;
+   const status=document.createElement('span');status.textContent=source.error?'Source unavailable':source.stale?'Source stale':'Source responding';
+   row.append(name,status);health.append(row);}
+ }
+ const prior=refresh;refresh=async function(){await prior();update();};
+ new MutationObserver(()=>{if(!busy)update();}).observe(document.getElementById('connection'),{childList:true,characterData:true,subtree:true});
+ update();
+})();
+
+</script>
+<script>
+// Local interface translations. Publisher headlines and author credits are never rewritten.
+(() => {
+ const locales={en:'en',ml:'ml',hi:'hi',ta:'ta'};
+ const rows=[
+ ['Global & UAE Threat Watch','ആഗോള, യുഎഇ സുരക്ഷാ നിരീക്ഷണം','वैश्विक और यूएई सुरक्षा निगरानी','உலக மற்றும் அமீரகப் பாதுகாப்புக் கண்காணிப்பு'],
+ ['Headline monitoring and official advisory links','വാർത്താ നിരീക്ഷണവും ഔദ്യോഗിക അറിയിപ്പുകളുടെ ലിങ്കുകളും','समाचार निगरानी और आधिकारिक परामर्श लिंक','செய்திக் கண்காணிப்பும் அதிகாரப்பூர்வ அறிவுரை இணைப்புகளும்'],
+ ['Global threat watch','ആഗോള സുരക്ഷാ നിരീക്ഷണം','वैश्विक सुरक्षा निगरानी','உலகப் பாதுகாப்புக் கண்காணிப்பு'],
+ ['UAE threat watch','യുഎഇ സുരക്ഷാ നിരീക്ഷണം','यूएई सुरक्षा निगरानी','அமீரகப் பாதுகாப்புக் கண்காணிப்பு'],
+ ['NOT VERIFIED','സ്ഥിരീകരിച്ചിട്ടില്ല','पुष्टि नहीं हुई','சரிபார்க்கப்படவில்லை'],
+ ['Official threat level:','ഔദ്യോഗിക അപകടനില:','आधिकारिक ख़तरे का स्तर:','அதிகாரப்பூர்வ அச்சுறுத்தல் நிலை:'],
+ ['Not assessed','വിലയിരുത്തിയിട്ടില്ല','आकलन नहीं किया गया','மதிப்பிடப்படவில்லை'],
+ ['Country travel advice (UK government) ↗','രാജ്യം തിരിച്ചുള്ള യാത്രാ നിർദ്ദേശങ്ങൾ (UK സർക്കാർ) ↗','देशवार यात्रा सलाह (UK सरकार) ↗','நாடுவாரிப் பயண அறிவுரை (UK அரசு) ↗'],
+ ['UAE official emergency guidance ↗','യുഎഇ ഔദ്യോഗിക അടിയന്തര മാർഗനിർദ്ദേശങ്ങൾ ↗','यूएई के आधिकारिक आपातकालीन निर्देश ↗','அமீரகத்தின் அதிகாரப்பூர்வ அவசரநிலை வழிகாட்டல் ↗'],
+ ['UAE MoFA travel warnings ↗','യുഎഇ വിദേശകാര്യ മന്ത്രാലയത്തിന്റെ യാത്രാ മുന്നറിയിപ്പുകൾ ↗','यूएई विदेश मंत्रालय की यात्रा चेतावनियाँ ↗','அமீரக வெளியுறவு அமைச்சகப் பயண எச்சரிக்கைகள் ↗'],
+ ['These are headline counts, not a war probability or an official safety rating. Advisory links must be opened to check their latest guidance; they are not automatically verified here.','ഇവ വാർത്തകളുടെ എണ്ണമാണ്; യുദ്ധസാധ്യതയോ ഔദ്യോഗിക സുരക്ഷാ റേറ്റിങ്ങോ അല്ല. ഏറ്റവും പുതിയ മാർഗനിർദ്ദേശങ്ങൾ അറിയാൻ ഔദ്യോഗിക ലിങ്കുകൾ തുറക്കണം; അവ ഇവിടെ സ്വയം പരിശോധിക്കുന്നില്ല.','ये सुर्खियों की गिनती हैं, युद्ध की संभावना या आधिकारिक सुरक्षा रेटिंग नहीं। नवीनतम निर्देश जानने के लिए परामर्श लिंक खोलें; यहाँ उनकी स्वतः पुष्टि नहीं होती।','இவை செய்தித் தலைப்புகளின் எண்ணிக்கைகள்; போரின் நிகழ்தகவோ அதிகாரப்பூர்வப் பாதுகாப்பு மதிப்பீடோ அல்ல. சமீபத்திய அறிவுரைக்கு அதிகாரப்பூர்வ இணைப்புகளைத் திறக்கவும்; அவை இங்கு தானாகச் சரிபார்க்கப்படுவதில்லை.'],
+ ['News source health','വാർത്താ ഉറവിടങ്ങളുടെ നില','समाचार स्रोतों की स्थिति','செய்தி ஆதாரங்களின் நிலை'],
+ ['Provider checks show feed availability, not independent verification of every report.','ഉറവിട പരിശോധന feed ലഭ്യതയാണ് കാണിക്കുന്നത്; ഓരോ വാർത്തയുടെയും സ്വതന്ത്ര സ്ഥിരീകരണമല്ല.','स्रोत की जाँच फ़ीड की उपलब्धता दिखाती है; हर रिपोर्ट की स्वतंत्र पुष्टि नहीं।','ஆதாரச் சரிபார்ப்பு செய்தி வழங்கலின் நிலையை மட்டுமே காட்டும்; ஒவ்வொரு அறிக்கையின் சுயாதீன உறுதிப்படுத்தல் அல்ல.'],
+ ['Source unavailable','ഉറവിടം ലഭ്യമല്ല','स्रोत उपलब्ध नहीं','ஆதாரம் கிடைக்கவில்லை'],['Source stale','ഉറവിടം പുതുക്കിയിട്ടില്ല','स्रोत पुराना है','ஆதாரம் புதுப்பிக்கப்படவில்லை'],['Source responding','ഉറവിടം പ്രതികരിക്കുന്നു','स्रोत जवाब दे रहा है','ஆதாரம் செயல்படுகிறது'],
+ ['Insufficient fresh coverage for a current assessment.','നിലവിലെ വിലയിരുത്തലിന് മതിയായ പുതിയ വിവരങ്ങളില്ല.','वर्तमान आकलन के लिए पर्याप्त ताज़ा जानकारी नहीं।','தற்போதைய மதிப்பீட்டுக்குப் போதுமான புதிய தகவல் இல்லை.'],
+ ['Open-source geopolitical monitoring','പൊതുവിവരങ്ങളെ അടിസ്ഥാനമാക്കിയുള്ള നിരീക്ഷണം','सार्वजनिक स्रोतों पर आधारित निगरानी','பொது ஆதாரங்களை அடிப்படையாகக் கொண்ட கண்காணிப்பு'],
+ ['GLOBAL CONFLICT INTELLIGENCE','ആഗോള സംഘർഷ നിരീക്ഷണം','वैश्विक संघर्ष निगरानी','உலகளாவிய மோதல் கண்காணிப்பு'],
+ ['World conflicts · Strategic risk · Regional impact','ലോക സംഘർഷങ്ങൾ · തന്ത്രപരമായ അപകടസാധ്യത · പ്രാദേശിക സ്വാധീനം','विश्व संघर्ष · रणनीतिक जोखिम · क्षेत्रीय प्रभाव','உலக மோதல்கள் · மூலோபாய அபாயம் · பிராந்தியத் தாக்கம்'],
+ ['An independent monitoring project · Created by Fasil Adattil','സ്വതന്ത്ര നിരീക്ഷണ പദ്ധതി · തയ്യാറാക്കിയത് Fasil Adattil','स्वतंत्र निगरानी परियोजना · निर्माता Fasil Adattil','சுயாதீன கண்காணிப்புத் திட்டம் · உருவாக்கியவர் Fasil Adattil'],
+ ['↻ Refresh intelligence','↻ വാർത്തകൾ പുതുക്കുക','↻ समाचार ताज़ा करें','↻ செய்திகளைப் புதுப்பிக்கவும்'],
+ ['↻ Checking…','↻ പരിശോധിക്കുന്നു…','↻ जाँच जारी…','↻ சரிபார்க்கப்படுகிறது…'],
+ ['Global Situation & Escalation Watch','ആഗോള സ്ഥിതിയും സംഘർഷവർധനയും','वैश्विक स्थिति और तनाव पर नज़र','உலக நிலவரமும் மோதல் தீவிரமும்'],
+ ['One dashboard for international conflict reporting, major escalation signals, Gulf security, potential UAE exposure, energy markets and humanitarian developments. Open the original reports before drawing conclusions.','അന്താരാഷ്ട്ര സംഘർഷവാർത്തകൾ, ഗൾഫ് സുരക്ഷ, യുഎഇയിലെ സാധ്യതയുള്ള സ്വാധീനം, ഊർജവിപണി, മാനുഷിക സാഹചര്യങ്ങൾ എന്നിവ ഒരിടത്ത്. നിഗമനത്തിലെത്തും മുമ്പ് യഥാർത്ഥ റിപ്പോർട്ടുകൾ വായിക്കുക.','अंतरराष्ट्रीय संघर्ष समाचार, खाड़ी सुरक्षा, यूएई पर संभावित प्रभाव, ऊर्जा बाज़ार और मानवीय घटनाक्रम एक जगह। निष्कर्ष निकालने से पहले मूल रिपोर्ट पढ़ें।','சர்வதேச மோதல் செய்திகள், வளைகுடாப் பாதுகாப்பு, ஐக்கிய அரபு அமீரகத்தின் மீதான சாத்தியமான தாக்கம், எரிசக்திச் சந்தைகள் மற்றும் மனிதாபிமான நிலவரங்கள் ஒரே இடத்தில். முடிவெடுக்கும் முன் மூல அறிக்கைகளைப் படிக்கவும்.'],
+ ['GLOBAL MEDIA SIGNAL','ആഗോള വാർത്താ സൂചിക','वैश्विक समाचार संकेत','உலகச் செய்திக் குறியீடு'],
+ ['PRIORITY HEADLINES','പ്രാധാന്യമുള്ള തലക്കെട്ടുകൾ','प्रमुख सुर्खियाँ','முக்கியத் தலைப்புகள்'],
+ ['Escalation-related keywords','സംഘർഷവർധനയുമായി ബന്ധപ്പെട്ട പദങ്ങൾ','तनाव बढ़ने से जुड़े शब्द','மோதல் தீவிரம் தொடர்பான சொற்கள்'],
+ ['REPORTS RECEIVED','ലഭിച്ച റിപ്പോർട്ടുകൾ','प्राप्त रिपोर्ट','பெறப்பட்ட அறிக்கைகள்'],
+ ['Unique articles in current fetch','നിലവിലെ ശേഖരത്തിലെ വ്യത്യസ്ത റിപ്പോർട്ടുകൾ','वर्तमान संग्रह में अलग-अलग रिपोर्ट','தற்போதைய தொகுப்பில் தனித்தனி அறிக்கைகள்'],
+ ['LAST CHECKED','അവസാനം പരിശോധിച്ചത്','अंतिम जाँच','கடைசியாகச் சரிபார்த்தது'],
+ ['Awaiting news data','വാർത്തകൾ കാത്തിരിക്കുന്നു','समाचार की प्रतीक्षा','செய்திகளுக்காகக் காத்திருக்கிறது'],
+ ['Waiting to connect','ബന്ധിപ്പിക്കാൻ കാത്തിരിക്കുന്നു','कनेक्शन की प्रतीक्षा','இணைப்புக்காகக் காத்திருக்கிறது'],
+ ['🌍 Regional Conflict Monitor','🌍 പ്രാദേശിക സംഘർഷ നിരീക്ഷണം','🌍 क्षेत्रीय संघर्ष निगरानी','🌍 பிராந்திய மோதல் கண்காணிப்பு'],
+ ['Regional media signal index · 0–100 · not a probability of war','പ്രാദേശിക വാർത്താ സൂചിക · 0–100 · യുദ്ധസാധ്യതയല്ല','क्षेत्रीय समाचार संकेत · 0–100 · युद्ध की संभावना नहीं','பிராந்தியச் செய்திக் குறியீடு · 0–100 · போரின் நிகழ்தகவு அல்ல'],
+ ['LIVE DATA WHEN AVAILABLE','ലഭ്യമാകുമ്പോൾ പുതുക്കിയ വിവരങ്ങൾ','उपलब्ध होने पर ताज़ा जानकारी','கிடைக்கும்போது புதுப்பிக்கப்பட்ட தகவல்'],
+ ['Middle East & Gulf','മിഡിൽ ഈസ്റ്റ് & ഗൾഫ്','मध्य पूर्व और खाड़ी','மத்திய கிழக்கு மற்றும் வளைகுடா'],
+ ['Europe','യൂറോപ്പ്','यूरोप','ஐரோப்பா'],['Africa','ആഫ്രിക്ക','अफ़्रीका','ஆப்பிரிக்கா'],
+ ['Asia','ഏഷ്യ','एशिया','ஆசியா'],['Americas','അമേരിക്കൻ മേഖലകൾ','अमेरिकी क्षेत्र','அமெரிக்கப் பகுதிகள்'],
+ ['Global Flashpoints','ആഗോള സംഘർഷകേന്ദ്രങ്ങൾ','वैश्विक तनाव केंद्र','உலகளாவிய மோதல் மையங்கள்'],
+ ['Iran · Israel · Gaza · Lebanon · Yemen · Hormuz','ഇറാൻ · ഇസ്രായേൽ · ഗാസ · ലെബനൻ · യെമൻ · ഹോർമുസ്','ईरान · इज़राइल · ग़ज़ा · लेबनान · यमन · होर्मुज़','ஈரான் · இஸ்ரேல் · காசா · லெபனான் · ஏமன் · ஹோர்முஸ்'],
+ ['Ukraine · Russia · NATO · European security','യുക്രെയ്ൻ · റഷ്യ · NATO · യൂറോപ്യൻ സുരക്ഷ','यूक्रेन · रूस · NATO · यूरोपीय सुरक्षा','உக்ரைன் · ரஷ்யா · NATO · ஐரோப்பியப் பாதுகாப்பு'],
+ ['Sudan · Sahel · Somalia · DRC · regional conflicts','സുഡാൻ · സഹേൽ · സോമാലിയ · DRC · പ്രാദേശിക സംഘർഷങ്ങൾ','सूडान · साहेल · सोमालिया · DRC · क्षेत्रीय संघर्ष','சூடான் · சாஹெல் · சோமாலியா · DRC · பிராந்திய மோதல்கள்'],
+ ['Pakistan · India · Myanmar · Taiwan · Korea','പാകിസ്താൻ · ഇന്ത്യ · മ്യാൻമർ · തായ്‌വാൻ · കൊറിയ','पाकिस्तान · भारत · म्यांमार · ताइवान · कोरिया','பாகிஸ்தான் · இந்தியா · மியான்மர் · தைவான் · கொரியா'],
+ ['Haiti · Mexico · Colombia · Venezuela','ഹെയ്തി · മെക്സിക്കോ · കൊളംബിയ · വെനസ്വേല','हैती · मेक्सिको · कोलंबिया · वेनेज़ुएला','ஹைட்டி · மெக்சிகோ · கொலம்பியா · வெனிசுலா'],
+ ['Ceasefires · military alerts · sanctions · diplomacy','വെടിനിർത്തൽ · സൈനിക മുന്നറിയിപ്പുകൾ · ഉപരോധം · നയതന്ത്രം','युद्धविराम · सैन्य चेतावनी · प्रतिबंध · कूटनीति','போர்நிறுத்தம் · இராணுவ எச்சரிக்கைகள் · தடைகள் · தூதரகம்'],
+ ['🚨 Major Issue & Escalation Watch','🚨 പ്രധാന സംഭവങ്ങളും സംഘർഷവർധനയും','🚨 प्रमुख घटनाएँ और बढ़ता तनाव','🚨 முக்கிய நிகழ்வுகளும் மோதல் தீவிரமும்'],
+ ['Topics that deserve attention when credible new reporting appears','വിശ്വസനീയമായ പുതിയ റിപ്പോർട്ടുകൾ വരുമ്പോൾ ശ്രദ്ധിക്കേണ്ട വിഷയങ്ങൾ','विश्वसनीय नई रिपोर्ट आने पर ध्यान देने योग्य विषय','நம்பகமான புதிய அறிக்கைகள் வரும்போது கவனிக்க வேண்டிய தலைப்புகள்'],
+ ['HIGH-PRIORITY WATCHLIST','പ്രധാന നിരീക്ഷണ വിഷയങ്ങൾ','प्राथमिक निगरानी सूची','முக்கிய கண்காணிப்புப் பட்டியல்'],
+ ['HOW TO INTERPRET SIGNALS','സൂചനകൾ എങ്ങനെ മനസ്സിലാക്കാം','संकेतों को कैसे समझें','குறியீடுகளைப் புரிந்துகொள்வது எப்படி'],
+ ['Severity is not certainty','തീവ്രത ഉറപ്പിന്റെ അളവല്ല','तीव्रता का मतलब निश्चितता नहीं','தீவிரம் என்பது உறுதியல்ல'],
+ ['Scores reflect the number of matching headlines and escalation-related terms. A high score may reflect heavy media coverage, not necessarily a worsening battlefield.','സ്കോർ ബന്ധപ്പെട്ട തലക്കെട്ടുകളുടെയും പദങ്ങളുടെയും എണ്ണമാണ് സൂചിപ്പിക്കുന്നത്. ഉയർന്ന സ്കോർ കൂടുതൽ വാർത്താകവറേജ് കാരണമാകാം; യുദ്ധസ്ഥിതി മോശമായെന്ന് അത് ഉറപ്പാക്കുന്നില്ല.','अंक संबंधित सुर्खियों और तनाव से जुड़े शब्दों की संख्या बताते हैं। अधिक अंक ज़्यादा समाचार कवरेज दिखा सकते हैं; ज़मीनी हालात बिगड़ना ज़रूरी नहीं।','மதிப்பெண்கள் தொடர்புடைய தலைப்புகள் மற்றும் மோதல் தீவிரம் சார்ந்த சொற்களின் எண்ணிக்கையைக் காட்டுகின்றன. அதிக மதிப்பெண் அதிக செய்திக் கவனத்தைக் குறிக்கலாம்; களநிலவரம் மோசமடைந்ததாக உறுதிப்படுத்தாது.'],
+ ['Verify major claims against multiple independent newsrooms or primary institutions. Headlines alone cannot confirm casualties, responsibility or military outcomes.','പ്രധാന അവകാശവാദങ്ങൾ ഒന്നിലധികം സ്വതന്ത്ര വാർത്താസ്ഥാപനങ്ങളിലൂടെയോ പ്രാഥമിക ഉറവിടങ്ങളിലൂടെയോ പരിശോധിക്കുക. തലക്കെട്ടുകൾ മാത്രം മരണസംഖ്യയോ ഉത്തരവാദിത്തമോ സൈനിക ഫലമോ സ്ഥിരീകരിക്കില്ല.','बड़े दावों को कई स्वतंत्र समाचार संस्थानों या प्राथमिक स्रोतों से जाँचें। केवल सुर्खियाँ हताहतों, ज़िम्मेदारी या सैन्य नतीजों की पुष्टि नहीं करतीं।','முக்கியக் கூற்றுகளைப் பல சுயாதீனச் செய்தி நிறுவனங்கள் அல்லது முதன்மை ஆதாரங்களுடன் சரிபார்க்கவும். தலைப்புகள் மட்டுமே உயிரிழப்பு, பொறுப்பு அல்லது இராணுவ முடிவுகளை உறுதிப்படுத்தாது.'],
+ ['Trend comparisons are based on saved snapshots in this browser. They are not a complete historical conflict dataset.','ഈ browser-ൽ സൂക്ഷിച്ച വിവരങ്ങളാണ് പ്രവണതാ താരതമ്യത്തിന് അടിസ്ഥാനം. ഇത് പൂർണമായ ചരിത്രസംഘർഷ ഡാറ്റയല്ല.','रुझान की तुलना इस ब्राउज़र में सहेजे गए रिकॉर्ड पर आधारित है। यह संघर्षों का पूरा ऐतिहासिक डेटासेट नहीं है।','போக்கு ஒப்பீடுகள் இந்த உலாவியில் சேமித்த பதிவுகளை அடிப்படையாகக் கொண்டவை. இது முழுமையான வரலாற்று மோதல் தரவுத்தொகுப்பு அல்ல.'],
+ ['Missile & airstrike reports','മിസൈൽ, വ്യോമാക്രമണ റിപ്പോർട്ടുകൾ','मिसाइल और हवाई हमले की रिपोर्ट','ஏவுகணை மற்றும் வான்வழித் தாக்குதல் அறிக்கைகள்'],
+ ['Ceasefire & diplomacy','വെടിനിർത്തലും നയതന്ത്രവും','युद्धविराम और कूटनीति','போர்நிறுத்தமும் தூதரக முயற்சிகளும்'],
+ ['Hormuz & shipping','ഹോർമുസും കപ്പൽഗതാഗതവും','होर्मुज़ और समुद्री परिवहन','ஹோர்முஸ் மற்றும் கப்பல் போக்குவரத்து'],
+ ['Regional escalation','പ്രാദേശിക സംഘർഷവർധന','क्षेत्रीय तनाव में वृद्धि','பிராந்திய மோதல் தீவிரம்'],
+ ['NO MATCH','ബന്ധപ്പെട്ട റിപ്പോർട്ടില്ല','कोई मिलान नहीं','பொருந்தும் அறிக்கை இல்லை'],
+ ['No matching headline in the current feed. This does not confirm that the issue is absent.','നിലവിലെ feed-ൽ ബന്ധപ്പെട്ട തലക്കെട്ടില്ല. പ്രശ്നം ഇല്ലെന്ന് ഇത് ഉറപ്പാക്കുന്നില്ല.','वर्तमान फ़ीड में संबंधित सुर्खी नहीं है। इससे समस्या न होने की पुष्टि नहीं होती।','தற்போதைய செய்தித் தொகுப்பில் பொருந்தும் தலைப்பு இல்லை. பிரச்சினை இல்லை என்பதை இது உறுதிப்படுத்தாது.'],
+ ['Latest matching headline:','ഏറ്റവും പുതിയ ബന്ധപ്പെട്ട തലക്കെട്ട്:','नवीनतम संबंधित सुर्खी:','சமீபத்திய தொடர்புடைய தலைப்பு:'],
+ ['🇦🇪 UAE Impact Monitor','🇦🇪 യുഎഇ സ്വാധീന നിരീക്ഷണം','🇦🇪 यूएई प्रभाव निगरानी','🇦🇪 அமீரகத் தாக்கக் கண்காணிப்பு'],
+ ['Potential exposure to monitor · not a claim that disruption is happening now','സാധ്യതയുള്ള സ്വാധീനങ്ങൾ · ഇപ്പോൾ തടസ്സമുണ്ടെന്ന അവകാശവാദമല്ല','संभावित प्रभाव पर नज़र · अभी बाधा होने का दावा नहीं','சாத்தியமான தாக்கங்கள் · தற்போது பாதிப்பு ஏற்பட்டுள்ளதாகக் கூறவில்லை'],
+ ['Oil & Energy','എണ്ണയും ഊർജവും','तेल और ऊर्जा','எண்ணெய் மற்றும் எரிசக்தி'],
+ ['Flights & Airspace','വിമാനസർവീസും വ്യോമപാതയും','उड़ानें और हवाई क्षेत्र','விமானங்கள் மற்றும் வான்வெளி'],
+ ['Shipping & Trade','കപ്പൽഗതാഗതവും വ്യാപാരവും','समुद्री परिवहन और व्यापार','கப்பல் போக்குவரத்து மற்றும் வர்த்தகம்'],
+ ['No strong matching headline in this feed. This is not an official all-clear.','ഈ feed-ൽ ശക്തമായ ബന്ധപ്പെട്ട സൂചനയില്ല. ഇത് ഔദ്യോഗിക സുരക്ഷാ ഉറപ്പല്ല.','इस फ़ीड में कोई मज़बूत संबंधित संकेत नहीं है। यह आधिकारिक सुरक्षा आश्वासन नहीं है।','இந்தத் தொகுப்பில் வலுவான தொடர்புடைய அறிகுறி இல்லை. இது அதிகாரப்பூர்வப் பாதுகாப்பு உறுதி அல்ல.'],
+ ['Review original reports and official advisories.','യഥാർത്ഥ റിപ്പോർട്ടുകളും ഔദ്യോഗിക അറിയിപ്പുകളും പരിശോധിക്കുക.','मूल रिपोर्ट और आधिकारिक परामर्श देखें।','மூல அறிக்கைகளையும் அதிகாரப்பூர்வ அறிவுறுத்தல்களையும் பார்க்கவும்.'],
+ ['📰 Latest Global Reports','📰 ഏറ്റവും പുതിയ ലോകവാർത്തകൾ','📰 नवीनतम वैश्विक रिपोर्ट','📰 சமீபத்திய உலகச் செய்திகள்'],
+ ['Selected RSS headlines, publisher, time and original report links','തിരഞ്ഞെടുത്ത RSS തലക്കെട്ടുകൾ, പ്രസാധകൻ, സമയം, യഥാർത്ഥ റിപ്പോർട്ട് ലിങ്കുകൾ','चयनित RSS सुर्खियाँ, प्रकाशक, समय और मूल रिपोर्ट के लिंक','தேர்ந்தெடுக்கப்பட்ட RSS தலைப்புகள், வெளியீட்டாளர், நேரம் மற்றும் மூல அறிக்கை இணைப்புகள்'],
+ ['All regions','എല്ലാ മേഖലകളും','सभी क्षेत्र','அனைத்துப் பகுதிகளும்'],
+ ['South & East Asia','ദക്ഷിണ, കിഴക്കൻ ഏഷ്യ','दक्षिण और पूर्वी एशिया','தெற்கு மற்றும் கிழக்கு ஆசியா'],
+ ['RSS REPORT','RSS വാർത്ത','RSS रिपोर्ट','RSS செய்தி'],['Source terms','ഉറവിടത്തിന്റെ വ്യവസ്ഥകൾ','स्रोत की शर्तें','ஆதார விதிமுறைகள்'],
+ ['Original:','യഥാർത്ഥ റിപ്പോർട്ട്:','मूल रिपोर्ट:','மூல அறிக்கை:'],
+ ['· Headline formatted as plain text. No body text or photo reproduced.','· തലക്കെട്ട് സാധാരണ അക്ഷരരൂപത്തിൽ. ലേഖനമോ ചിത്രമോ പുനഃപ്രസിദ്ധീകരിച്ചിട്ടില്ല.','· शीर्षक साधारण पाठ में। लेख का पूरा पाठ या चित्र पुनर्प्रकाशित नहीं किया गया।','· தலைப்பு எளிய உரையில். கட்டுரையின் முழு உரையோ படமோ மறுபதிப்பிக்கப்படவில்லை.'],
+ ['📊 Escalation Trend','📊 സംഘർഷ സൂചനകളുടെ പ്രവണത','📊 तनाव संकेतों का रुझान','📊 மோதல் அறிகுறிகளின் போக்கு'],
+ ['Saved global media-signal snapshots on this device','ഈ ഉപകരണത്തിൽ സൂക്ഷിച്ച ആഗോള വാർത്താ സൂചികകൾ','इस उपकरण पर सहेजे गए वैश्विक समाचार संकेत','இந்தச் சாதனத்தில் சேமித்த உலகச் செய்திக் குறியீடுகள்'],
+ ['Clear saved trend','സൂക്ഷിച്ച പ്രവണത മായ്ക്കുക','सहेजा रुझान मिटाएँ','சேமித்த போக்கை அழிக்கவும்'],
+ ['No saved snapshots yet. Refresh to start collecting local snapshots.','ഇതുവരെ വിവരങ്ങൾ സൂക്ഷിച്ചിട്ടില്ല. ആരംഭിക്കാൻ വാർത്തകൾ പുതുക്കുക.','अभी कोई रिकॉर्ड सहेजा नहीं गया। शुरू करने के लिए समाचार ताज़ा करें।','இன்னும் பதிவுகள் சேமிக்கப்படவில்லை. தொடங்கச் செய்திகளைப் புதுப்பிக்கவும்.'],
+ ['One snapshot saved. Refresh again later to compare changes.','ഒരു രേഖ സൂക്ഷിച്ചു. മാറ്റങ്ങൾ താരതമ്യം ചെയ്യാൻ പിന്നീട് പുതുക്കുക.','एक रिकॉर्ड सहेजा गया। बदलाव की तुलना के लिए बाद में ताज़ा करें।','ஒரு பதிவு சேமிக்கப்பட்டது. மாற்றங்களை ஒப்பிடப் பின்னர் புதுப்பிக்கவும்.'],
+ ['🎥 Video Briefings','🎥 വീഡിയോ റിപ്പോർട്ടുകൾ','🎥 वीडियो रिपोर्ट','🎥 காணொளி அறிக்கைகள்'],
+ ['Open video results from established news organisations. Check upload dates and sources.','വാർത്താസ്ഥാപനങ്ങളുടെ വീഡിയോ ഫലങ്ങൾ തുറക്കാം. അപ്‌ലോഡ് തീയതിയും ഉറവിടവും പരിശോധിക്കുക.','समाचार संस्थानों के वीडियो परिणाम खोलें। अपलोड की तारीख और स्रोत जाँचें।','செய்தி நிறுவனங்களின் காணொளி முடிவுகளைத் திறக்கவும். பதிவேற்றத் தேதியையும் ஆதாரத்தையும் சரிபார்க்கவும்.'],
+ ['International news reports and video coverage','അന്താരാഷ്ട്ര വാർത്തകളും വീഡിയോ റിപ്പോർട്ടുകളും','अंतरराष्ट्रीय समाचार और वीडियो','சர்வதேசச் செய்திகள் மற்றும் காணொளிகள்'],
+ ['News footage and international developments','വാർത്താദൃശ്യങ്ങളും അന്താരാഷ്ട്ര സംഭവങ്ങളും','समाचार दृश्य और अंतरराष्ट्रीय घटनाक्रम','செய்திக் காட்சிகளும் சர்வதேச நிகழ்வுகளும்'],
+ ['Background, explainers and expert analysis','പശ്ചാത്തലം, വിശദീകരണം, വിദഗ്ധ വിശകലനം','पृष्ठभूमि, व्याख्या और विशेषज्ञ विश्लेषण','பின்னணி, விளக்கங்கள் மற்றும் நிபுணர் ஆய்வு'],
+ ['Regional coverage and interviews','പ്രാദേശിക വാർത്തകളും അഭിമുഖങ്ങളും','क्षेत्रीय समाचार और साक्षात्कार','பிராந்தியச் செய்திகள் மற்றும் நேர்காணல்கள்'],
+ ['Global developments and live-news coverage','ആഗോള സംഭവങ്ങളും തത്സമയ വാർത്തകളും','वैश्विक घटनाक्रम और ताज़ा समाचार','உலக நிகழ்வுகளும் நேரடிச் செய்திகளும்'],
+ ['Civilian protection and humanitarian briefings','സിവിലിയൻ സംരക്ഷണവും മാനുഷിക റിപ്പോർട്ടുകളും','नागरिक सुरक्षा और मानवीय रिपोर्ट','பொதுமக்கள் பாதுகாப்பும் மனிதாபிமான அறிக்கைகளும்'],
+ ['🔎 Trusted Starting Points','🔎 പരിശോധിക്കാവുന്ന ഉറവിടങ്ങൾ','🔎 जाँच के लिए प्रमुख स्रोत','🔎 சரிபார்ப்பதற்கான ஆதாரங்கள்'],
+ ['Visit original sources to verify significant developments','പ്രധാന സംഭവങ്ങൾ പരിശോധിക്കാൻ യഥാർത്ഥ ഉറവിടങ്ങൾ തുറക്കുക','प्रमुख घटनाओं की पुष्टि के लिए मूल स्रोत देखें','முக்கிய நிகழ்வுகளைச் சரிபார்க்க மூல ஆதாரங்களைப் பார்க்கவும்'],
+ ['International news','അന്താരാഷ്ട്ര വാർത്തകൾ','अंतरराष्ट्रीय समाचार','சர்வதேசச் செய்திகள்'],['Global reporting','ആഗോള റിപ്പോർട്ടുകൾ','वैश्विक रिपोर्ट','உலக அறிக்கைகள்'],
+ ['World coverage','ലോകവാർത്തകൾ','विश्व समाचार','உலகச் செய்திகள்'],['International updates','അന്താരാഷ്ട്ര വിവരങ്ങൾ','अंतरराष्ट्रीय अपडेट','சர்வதேசப் புதுப்பிப்புகள்'],
+ ['Humanitarian developments','മാനുഷിക സാഹചര്യങ്ങൾ','मानवीय घटनाक्रम','மனிதாபிமான நிலவரங்கள்'],['Conflict event data','സംഘർഷ സംഭവവിവരങ്ങൾ','संघर्ष की घटनाओं का डेटा','மோதல் நிகழ்வுத் தரவு'],
+ ['Conflict analysis','സംഘർഷ വിശകലനം','संघर्ष विश्लेषण','மோதல் ஆய்வு'],['Official information portal','ഔദ്യോഗിക വിവരങ്ങൾ','आधिकारिक सूचना पोर्टल','அதிகாரப்பூர்வத் தகவல் தளம்'],
+ ['Open-source news discovery · Automatic feed may be interrupted','പൊതുഉറവിടങ്ങളിൽ നിന്നുള്ള വാർത്തകൾ · feed തടസ്സപ്പെട്ടേക്കാം','सार्वजनिक स्रोतों के समाचार · फ़ीड बाधित हो सकती है','பொது ஆதாரச் செய்திகள் · செய்தி வழங்கல் தடைப்படலாம்'],
+ ['Severity estimates are not official intelligence or forecasts.','തീവ്രതാസൂചിക ഔദ്യോഗിക വിവരമോ പ്രവചനമോ അല്ല.','तीव्रता के अनुमान आधिकारिक खुफ़िया जानकारी या पूर्वानुमान नहीं हैं।','தீவிர மதிப்பீடுகள் அதிகாரப்பூர்வ உளவுத்தகவலோ முன்னறிவிப்போ அல்ல.'],
+ ['Created by Fasil Adattil','തയ്യാറാക്കിയത് Fasil Adattil','निर्माता Fasil Adattil','உருவாக்கியவர் Fasil Adattil'],
+ ['SCHEDULED RSS SNAPSHOT','നിശ്ചിത സമയത്ത് ശേഖരിച്ച RSS വിവരങ്ങൾ','निर्धारित RSS संग्रह','திட்டமிட்ட RSS தொகுப்பு'],
+ ['PARTIAL / STALE RSS DATA','അപൂർണമായ / പഴയ RSS വിവരങ്ങൾ','अधूरा / पुराना RSS डेटा','முழுமையற்ற / பழைய RSS தரவு'],
+ ['DATA UNAVAILABLE','വിവരങ്ങൾ ലഭ്യമല്ല','जानकारी उपलब्ध नहीं','தகவல் கிடைக்கவில்லை'],
+ ['RSS snapshot available','RSS വിവരങ്ങൾ ലഭ്യമാണ്','RSS संग्रह उपलब्ध है','RSS தொகுப்பு கிடைக்கிறது'],
+ ['Partial or stale RSS snapshot','അപൂർണമോ പഴയതോ ആയ RSS വിവരങ്ങൾ','अधूरा या पुराना RSS संग्रह','முழுமையற்ற அல்லது பழைய RSS தொகுப்பு'],
+ ['RSS unavailable','RSS ലഭ്യമല്ല','RSS उपलब्ध नहीं','RSS கிடைக்கவில்லை'],
+ ['Reading the latest scheduled RSS snapshot…','ഏറ്റവും പുതിയ RSS വിവരങ്ങൾ വായിക്കുന്നു…','नवीनतम RSS संग्रह पढ़ा जा रहा है…','சமீபத்திய RSS தொகுப்பு படிக்கப்படுகிறது…'],
+ ['Selected RSS headline signal; not comparable with GDELT','തിരഞ്ഞെടുത്ത RSS വാർത്താ സൂചിക; GDELT-യുമായി താരതമ്യം ചെയ്യാനാവില്ല','चयनित RSS समाचार संकेत; GDELT से तुलना योग्य नहीं','தேர்ந்தெடுத்த RSS செய்திக் குறியீடு; GDELT உடன் ஒப்பிட முடியாது'],
+ ['Incomplete or empty RSS data — score withheld','അപൂർണമോ ശൂന്യമോ ആയ വിവരങ്ങൾ — സ്കോർ നൽകിയിട്ടില്ല','अधूरा या खाली डेटा — अंक नहीं दिए गए','முழுமையற்ற அல்லது காலியான தரவு — மதிப்பெண் வழங்கப்படவில்லை'],
+ ['No usable snapshot','ഉപയോഗിക്കാവുന്ന വിവരങ്ങളില്ല','उपयोग योग्य संग्रह नहीं','பயன்படுத்தக்கூடிய தொகுப்பு இல்லை'],
+ ['No current assessment available.','നിലവിലെ വിലയിരുത്തൽ ലഭ്യമല്ല.','वर्तमान आकलन उपलब्ध नहीं।','தற்போதைய மதிப்பீடு கிடைக்கவில்லை.'],
+ ['Partial or stale headlines cannot support a current assessment. Check official advisories.','അപൂർണമോ പഴയതോ ആയ വാർത്തകൾ നിലവിലെ വിലയിരുത്തലിന് മതിയാകില്ല. ഔദ്യോഗിക അറിയിപ്പുകൾ പരിശോധിക്കുക.','अधूरी या पुरानी सुर्खियों से वर्तमान आकलन नहीं किया जा सकता। आधिकारिक परामर्श देखें।','முழுமையற்ற அல்லது பழைய தலைப்புகள் தற்போதைய மதிப்பீட்டுக்குப் போதாது. அதிகாரப்பூர்வ அறிவுறுத்தல்களைப் பார்க்கவும்.'],
+ ['No assessment available. Check official advisories.','വിലയിരുത്തൽ ലഭ്യമല്ല. ഔദ്യോഗിക അറിയിപ്പുകൾ പരിശോധിക്കുക.','आकलन उपलब्ध नहीं। आधिकारिक परामर्श देखें।','மதிப்பீடு கிடைக்கவில்லை. அதிகாரப்பூர்வ அறிவுறுத்தல்களைப் பார்க்கவும்.'],
+ ['No matching RSS headlines. This does not mean there are no conflicts.','ബന്ധപ്പെട്ട RSS തലക്കെട്ടുകളില്ല. സംഘർഷങ്ങളില്ലെന്ന് ഇതിനർത്ഥമില്ല.','संबंधित RSS सुर्खियाँ नहीं हैं। इसका मतलब संघर्ष न होना नहीं है।','பொருந்தும் RSS தலைப்புகள் இல்லை. மோதல்கள் இல்லை என்று இதற்குப் பொருள் அல்ல.'],
+ ['No invented headlines. Use the original source links while the service is unavailable.','കൃത്രിമ തലക്കെട്ടുകൾ കാണിക്കുന്നില്ല. സേവനം ലഭ്യമല്ലാത്തപ്പോൾ യഥാർത്ഥ ഉറവിടങ്ങൾ തുറക്കുക.','काल्पनिक सुर्खियाँ नहीं दिखाई जातीं। सेवा उपलब्ध न होने पर मूल स्रोतों के लिंक खोलें।','கற்பனைத் தலைப்புகள் காட்டப்படுவதில்லை. சேவை கிடைக்காதபோது மூல ஆதார இணைப்புகளைப் பயன்படுத்தவும்.'],
+ ['WAITING','കാത്തിരിക്കുന്നു','प्रतीक्षा','காத்திருக்கிறது'],['NO DATA','വിവരമില്ല','डेटा नहीं','தரவு இல்லை'],
+ ['LIMITED DATA','പരിമിതമായ വിവരങ്ങൾ','सीमित डेटा','குறைந்த தரவு'],['Coverage incomplete','കവറേജ് അപൂർണമാണ്','कवरेज अधूरा है','முழுமையற்ற செய்திக் கவனம்'],
+ ['ELEVATED','ഉയർന്നത്','उच्च','அதிகம்'],['MODERATE','ഇടത്തരം','मध्यम','மிதம்'],['LOWER','കുറഞ്ഞത്','कम','குறைவு'],
+ ['NO STRONG SIGNAL','ശക്തമായ സൂചനയില്ല','मज़बूत संकेत नहीं','வலுவான அறிகுறி இல்லை'],['WATCHING','നിരീക്ഷിക്കുന്നു','निगरानी जारी','கண்காணிக்கப்படுகிறது'],
+ ['Waiting for news data','വാർത്താവിവരങ്ങൾ കാത്തിരിക്കുന്നു','समाचार डेटा की प्रतीक्षा','செய்தித் தரவுக்காகக் காத்திருக்கிறது'],
+ ['News headlines stay in the publisher’s original language.','വാർത്താതലക്കെട്ടുകൾ പ്രസാധകന്റെ യഥാർത്ഥ ഭാഷയിൽ തുടരും.','समाचार की सुर्खियाँ प्रकाशक की मूल भाषा में रहेंगी।','செய்தித் தலைப்புகள் வெளியீட்டாளரின் மூல மொழியிலேயே இருக்கும்.'],
+ ['Time not supplied','സമയം നൽകിയിട്ടില്ല','समय नहीं दिया गया','நேரம் வழங்கப்படவில்லை']
+ ];
+ const index=new Map(rows.map(row=>[row[0].toLowerCase(),row]));
+ let lang='en';try{lang=localStorage.getItem('gciLanguage')||'en';}catch{}
+ if(!Object.hasOwn(locales,lang))lang='en';
+ const languageIndex=()=>({en:0,ml:1,hi:2,ta:3})[lang];
+ function t(text){return index.get(text.toLowerCase())?.[languageIndex()]||text;}
+ function translate(text){
+  if(lang==='en')return text;
+  const direct=t(text);if(direct!==text)return direct;
+  let m;
+  if((m=text.match(/^(\d+) reports in this snapshot; (\d+) match escalation keywords\.$/)))return [text,`ഈ ശേഖരത്തിൽ ${m[1]} റിപ്പോർട്ടുകൾ; ${m[2]} എണ്ണത്തിൽ സംഘർഷവർധനയുമായി ബന്ധപ്പെട്ട പദങ്ങളുണ്ട്.`,`इस संग्रह में ${m[1]} रिपोर्ट; ${m[2]} में तनाव बढ़ने से जुड़े शब्द हैं।`,`இந்தத் தொகுப்பில் ${m[1]} அறிக்கைகள்; ${m[2]} அறிக்கைகளில் மோதல் தீவிரம் தொடர்பான சொற்கள் உள்ளன.`][languageIndex()];
+  if((m=text.match(/^(\d+) headlines directly mention UAE locations; (\d+) mention nearby regions or transport routes\. These groups may overlap\.$/)))return [text,`${m[1]} തലക്കെട്ടുകളിൽ യുഎഇ സ്ഥലങ്ങൾ നേരിട്ട് പരാമർശിക്കുന്നു; ${m[2]} എണ്ണത്തിൽ സമീപമേഖലകളോ ഗതാഗതപാതകളോ പരാമർശിക്കുന്നു. ഒരേ വാർത്ത രണ്ടിലും ഉൾപ്പെട്ടേക്കാം.`,`${m[1]} सुर्खियों में यूएई के स्थानों का सीधा उल्लेख; ${m[2]} में आसपास के क्षेत्र या परिवहन मार्ग हैं। एक रिपोर्ट दोनों समूहों में हो सकती है।`,`${m[1]} தலைப்புகளில் அமீரக இடங்கள் நேரடியாகக் குறிப்பிடப்படுகின்றன; ${m[2]} தலைப்புகளில் அருகிலுள்ள பகுதிகள் அல்லது போக்குவரத்துப் பாதைகள் குறிப்பிடப்படுகின்றன. ஒரே அறிக்கை இரண்டிலும் இருக்கலாம்.`][languageIndex()];
+  if((m=text.match(/^(\d+) reports · (.+)$/)))return [text,`${m[1]} റിപ്പോർട്ടുകൾ · `,`${m[1]} रिपोर्ट · `,`${m[1]} அறிக்கைகள் · `][languageIndex()]+translate(m[2]);
+  const signal=['Elevated media signal','Moderate media signal','Lower media signal','No matching reports'];
+  const signals=[['ഉയർന്ന വാർത്താ സൂചിക','മിതമായ വാർത്താ സൂചിക','കുറഞ്ഞ വാർത്താ സൂചിക','ബന്ധപ്പെട്ട റിപ്പോർട്ടുകളില്ല'],['उच्च समाचार संकेत','मध्यम समाचार संकेत','कम समाचार संकेत','संबंधित रिपोर्ट नहीं'],['அதிக செய்திக் குறியீடு','மிதமான செய்திக் குறியீடு','குறைந்த செய்திக் குறியீடு','பொருந்தும் அறிக்கைகள் இல்லை']];
+  if(signal.includes(text))return signals[languageIndex()-1][signal.indexOf(text)];
+  if((m=text.match(/^(\d+) REPORTS$/)))return [text,`${m[1]} റിപ്പോർട്ടുകൾ`,`${m[1]} रिपोर्ट`,`${m[1]} அறிக்கைகள்`][languageIndex()];
+  if((m=text.match(/^(\d+) matching reports in current feed\. (.+)$/)))return [text,`നിലവിലെ feed-ൽ ${m[1]} ബന്ധപ്പെട്ട റിപ്പോർട്ടുകൾ. `,`वर्तमान फ़ीड में ${m[1]} संबंधित रिपोर्ट। `,`தற்போதைய தொகுப்பில் ${m[1]} தொடர்புடைய அறிக்கைகள். `][languageIndex()]+t(m[2]);
+  if((m=text.match(/^(\d+) headlines from selected RSS feeds, including dedicated Middle East coverage, up to 7 days old\. Last provider check: (.+?)\. (Some sources failed or are stale\. )?Refresh reads the cache; providers are checked every 30 minutes\. Coverage differs from the former GDELT feed\.$/))){
+   const partial=m[3]?[text,'ചില ഉറവിടങ്ങൾ ലഭ്യമല്ല അല്ലെങ്കിൽ പഴയതാണ്. ','कुछ स्रोत विफल या पुराने हैं। ','சில ஆதாரங்கள் செயலிழந்துள்ளன அல்லது பழையவை. '][languageIndex()]:'';
+   return [text,`${m[1]} RSS തലക്കെട്ടുകൾ; മിഡിൽ ഈസ്റ്റ് വാർത്തകളും ഉൾപ്പെടുന്നു. പരമാവധി 7 ദിവസം പഴക്കമുള്ളവ. അവസാന ഉറവിട പരിശോധന: ${m[2]}. ${partial}Refresh സൂക്ഷിച്ച വിവരങ്ങൾ മാത്രം വായിക്കുന്നു; ഉറവിടങ്ങൾ ഓരോ 30 മിനിറ്റിലും പരിശോധിക്കും. പഴയ GDELT കവറേജുമായി വ്യത്യാസമുണ്ട്.`,`${m[1]} RSS सुर्खियाँ; मध्य पूर्व की रिपोर्ट भी शामिल हैं। अधिकतम 7 दिन पुरानी। स्रोत की अंतिम जाँच: ${m[2]}। ${partial}ताज़ा करने पर सहेजा डेटा पढ़ा जाता है; स्रोत हर 30 मिनट में जाँचे जाते हैं। कवरेज पुराने GDELT फ़ीड से अलग है।`,`${m[1]} RSS தலைப்புகள்; மத்திய கிழக்குச் செய்திகளும் அடங்கும். அதிகபட்சம் 7 நாட்கள் பழையவை. கடைசி ஆதாரச் சரிபார்ப்பு: ${m[2]}. ${partial}புதுப்பித்தல் சேமித்த தரவை மட்டுமே படிக்கும்; ஆதாரங்கள் 30 நிமிடங்களுக்கு ஒருமுறை சரிபார்க்கப்படும். முந்தைய GDELT தொகுப்பிலிருந்து செய்திக் கவனம் மாறுபடும்.`][languageIndex()];
+  }
+  if((m=text.match(/^(\d+) saved snapshots on this device\. Latest index: (.+?)\/100\. This is media-signal history, not a battlefield measurement\.$/)))return [text,`ഈ ഉപകരണത്തിൽ ${m[1]} രേഖകൾ. ഏറ്റവും പുതിയ സൂചിക: ${m[2]}/100. ഇത് വാർത്താ സൂചികയുടെ ചരിത്രമാണ്; യുദ്ധസ്ഥിതിയുടെ അളവല്ല.`,`इस उपकरण पर ${m[1]} रिकॉर्ड। नवीनतम सूचकांक: ${m[2]}/100। यह समाचार संकेतों का इतिहास है, युद्धक्षेत्र का माप नहीं।`,`இந்தச் சாதனத்தில் ${m[1]} பதிவுகள். சமீபத்திய குறியீடு: ${m[2]}/100. இது செய்திக் குறியீட்டின் வரலாறு; போர்க்கள அளவீடு அல்ல.`][languageIndex()];
+  return text;
+ }
+ const controls=document.createElement('div');controls.className='language-control';
+ controls.innerHTML='<label for="languageSelect">Language / ഭാഷ / भाषा / மொழி</label><select id="languageSelect" aria-label="Language / ഭാഷ / भाषा / மொழி"><option value="en">English</option><option value="ml">മലയാളം</option><option value="hi">हिन्दी</option><option value="ta">தமிழ்</option></select>';
+ document.querySelector('.actions').prepend(controls);
+ const note=document.createElement('p');note.id='languageNote';note.className='muted';note.style.fontSize='12px';note.textContent='News headlines stay in the publisher’s original language.';
+ document.querySelector('.hero').append(note);
+ const style=document.createElement('style');style.textContent='.language-control{display:flex;flex-direction:column;gap:5px}.language-control label{font-size:11px;color:var(--muted)}.language-control select{min-width:145px}.actions{align-items:end}html[lang="ml"] body,html[lang="ta"] body{line-height:1.8}.article h3 a{overflow-wrap:anywhere}';document.head.append(style);
+ const records=new WeakMap();let observer,queued=false;
+ function apply(){
+  observer?.disconnect();document.documentElement.lang=lang;
+  const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  while(walk.nextNode()){
+   const n=walk.currentNode,parent=n.parentElement;
+   if(!parent||parent.closest('script,style,.language-control,#news h3,#alerts p a'))continue;
+   const value=n.nodeValue;if(!value.trim())continue;
+   const old=records.get(n),original=old&&value===old.last?old.original:value;
+   const core=original.trim(),output=original.replace(core,translate(core));
+   if(n.nodeValue!==output)n.nodeValue=output;records.set(n,{original,last:output});
+  }
+  observer?.observe(document.body,{subtree:true,childList:true,characterData:true});
+ }
+ observer=new MutationObserver(()=>{if(!queued){queued=true;queueMicrotask(()=>{queued=false;apply();});}});
+ const select=controls.querySelector('select');select.value=lang;
+ select.addEventListener('change',()=>{lang=select.value;try{localStorage.setItem('gciLanguage',lang);}catch{}apply();});
+ apply();
+})();
+
+</script>
 </body>
 </html>
