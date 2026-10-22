@@ -109,6 +109,25 @@ border-top:1px solid var(--line);margin-top:30px;padding-top:16px;color:var(--mu
 .hero{padding:17px}.metric{padding:12px}.metric strong{font-size:25px}
 .actions{width:100%}.actions button{flex:1}.article img{height:190px}}
 </style>
+<style>
+:root{--bg:#080f1c;--panel:#111e32;--panel2:#172941;--line:#253852;--cyan:#79e4ef;--muted:#a2b5cb}
+body{background:radial-gradient(ellipse at 12% 0%,#183650 0,transparent 50%),radial-gradient(ellipse at 95% 15%,#1c2543 0,transparent 50%),#080f1c}
+.wrap{max-width:1440px;padding:30px 28px}.top{gap:24px}.logo{border:1px solid #95f2ff55;box-shadow:0 8px 35px #38d8e322}.brand h1{font-size:clamp(22px,2.7vw,38px);letter-spacing:-.6px}.credit-top{margin-top:7px}
+.hero{border-radius:24px;padding:28px 30px;background:linear-gradient(115deg,#16475b99,#172846cc 60%,#35284477);border:1px solid #4d708566;box-shadow:0 16px 55px #0002}.hero h2{margin:12px 0;font-weight:750}.hero p{line-height:1.8}.hero:after{right:25px;top:-24px;font-size:220px;color:#a2e9f008}
+.metric{border-radius:18px;padding:20px;background:linear-gradient(135deg,#16283eab,#0c192c);box-shadow:0 5px 20px #0001}.metric label{font-size:10px;letter-spacing:1.5px}.metric strong{font-variant-numeric:tabular-nums}.metric small{display:block;line-height:1.65}
+.section{margin-top:34px}.section-head{gap:16px;margin-bottom:16px}.section-head h2{font-size:22px;letter-spacing:-.3px}.section-head .eyebrow{margin-bottom:5px}.section-head p{max-width:760px;line-height:1.7}
+.watch-grid{gap:18px}.watch-card{--accent:#9aadc3;position:relative;overflow:hidden;padding:26px;border:1px solid #36455d;border-radius:22px;background:linear-gradient(125deg,#182b43,#101b2e);box-shadow:0 14px 35px #0002}.watch-card:before{content:'';position:absolute;inset:0 auto 0 0;width:4px;background:var(--accent)}.watch-card[data-level="low"]{--accent:#71d9c3}.watch-card[data-level="moderate"]{--accent:#ffd080}.watch-card[data-level="high"]{--accent:#ff987e}
+.watch-card-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.watch-card-top .eyebrow{flex:1;color:#cedced;letter-spacing:1.2px}.watch-icon{color:var(--accent);font-size:26px;line-height:1}.scope-chip{font-size:9px;letter-spacing:1px;color:var(--accent);border:1px solid #8ca3bd33;padding:5px 8px;border-radius:20px}.watch-level{font-size:clamp(22px,2.7vw,31px);font-weight:800;color:var(--accent);margin:24px 0 18px;line-height:1.25;letter-spacing:-.4px}
+.signal-track{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.signal-track span{height:8px;border-radius:6px;background:#34465e}.watch-card[data-level="low"] .signal-track span:first-child{background:#71d9c3}.watch-card[data-level="moderate"] .signal-track span:nth-child(-n+2){background:#ffd080}.watch-card[data-level="high"] .signal-track span{background:#ff987e}.signal-legend{display:flex;justify-content:space-between;font-size:9px;color:#a4b7cd;letter-spacing:1px;margin-top:8px}.watch-copy{color:#c1d0e2;font-size:13px;line-height:1.8;margin:18px 0 12px}.direct-note{color:#a7bdd4;font-size:12px;line-height:1.7}
+.watch-advisory{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;padding-top:16px;margin-top:16px;border-top:1px solid #8ba3bf22;color:var(--muted)}.watch-advisory strong{font-weight:600;color:#d5dfec}.watch-links{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:12px;font-size:11px}.watch-disclaimer{color:#bac9db;font-size:12px;line-height:1.8;padding:0 4px}.watch-method,.source-health{margin-top:10px;padding:15px 18px;background:#101e31}.watch-method summary,.source-health summary{cursor:pointer;font-size:13px;font-weight:650}.watch-method p{font-size:12px;line-height:1.8;color:var(--muted)}
+.source-health-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.source-health-item{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px;font-size:11px}.source-health-status{color:#ffcc8b}.source-health-status[data-ok="true"]{color:#71d9c3}.snapshot-chip{font-size:10px;font-weight:700;color:#ffcf98;border:1px solid #ffcf9833;border-radius:20px;padding:8px 11px;background:#ffcf9809}.snapshot-chip[data-fresh="true"]{color:#8be0d0;border-color:#8be0d033;background:#8be0d009}
+.news-tools{display:grid;grid-template-columns:minmax(180px,1fr) minmax(140px,220px) auto;gap:12px;align-items:end;background:#101e31;border:1px solid var(--line);padding:16px;border-radius:15px;margin-bottom:12px}.news-tools label{display:block;margin-bottom:6px;color:var(--muted);font-size:11px}.news-tools input,.news-tools select{width:100%;min-height:43px;background:#0b1728;border:1px solid #344a64;border-radius:9px;color:var(--text);font:inherit;padding:10px 12px}.news-tools input::placeholder{color:#8da3be}.news-tools p{grid-column:1/-1;margin:0;font-size:11px}
+.article{border-radius:18px;transition:border-color .15s,transform .15s;background:linear-gradient(145deg,#14243a,#0e1b2d)}.article:hover{border-color:#5a859c;transform:translateY(-2px)}.article-body{padding:20px}.article h3{font-size:16px;line-height:1.65;margin:14px 0}.article .meta{line-height:1.7}.article .summary{font-size:11px;line-height:1.8}.region{border-radius:18px;padding:20px}.badge{border-radius:6px}.panel{border-radius:17px}button,select,a{touch-action:manipulation}button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #79e4ef;outline-offset:4px}
+@media(max-width:800px){.watch-grid{grid-template-columns:1fr}.news-tools{grid-template-columns:1fr 1fr}.news-search-field{grid-column:1/-1}.source-health-grid{grid-template-columns:1fr}.watch-card{padding:23px}.section-head h2{font-size:20px}}
+@media(max-width:600px){.wrap{padding:18px 14px}.hero{padding:23px 20px;border-radius:19px}.metric{padding:15px}.section{margin-top:27px}.language-control{flex:1}.actions button,.actions>a{flex:1}.actions select{width:100%}.watch-level{font-size:25px}.news-tools{padding:13px}.article h3{font-size:15px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+</style>
 </head>
 <body>
 <main class="wrap">
@@ -566,31 +585,34 @@ refresh();
 
 </script>
 <script>
-// Headline monitoring is deliberately separate from an official threat assessment.
+// Media attention bands are never an official threat assessment.
 (() => {
+ const route=/\b(UAE|United Arab Emirates|Dubai|Abu Dhabi|Sharjah|Fujairah|Iran|Hormuz|Gulf|Red Sea|Houthi|Saudi Arabia|Yemen|airspace|tanker)\b/i;
+ const direct=/\b(UAE|United Arab Emirates|Dubai|Abu Dhabi|Sharjah|Fujairah)\b/i;
+ const band=n=>n>=6?'high':n>=3?'moderate':'low';
+ const labels={high:'HIGH MEDIA SIGNAL',moderate:'MODERATE MEDIA SIGNAL',low:'LOW MEDIA SIGNAL',unknown:'INSUFFICIENT DATA',none:'NO MATCHING REPORTS'};
+ const card=(id,icon,title,links)=>`<article class="watch-card" id="${id}WatchCard" data-level="unknown"><div class="watch-card-top"><span class="watch-icon" aria-hidden="true">${icon}</span><span class="eyebrow">${title}</span><span class="scope-chip">NEWS SIGNAL</span></div><div class="watch-level" id="${id}WatchLevel">INSUFFICIENT DATA</div><div class="signal-track" aria-hidden="true"><span></span><span></span><span></span></div><div class="signal-legend"><span>LOW</span><span>MODERATE</span><span>HIGH</span></div><p class="watch-copy" id="${id}WatchData">Waiting for news data</p>${id==='uae'?'<p class="direct-note" id="uaeDirectData"></p>':''}<div class="watch-advisory"><span>Official threat level:</span> <strong>Not assessed</strong></div><div class="watch-links">${links}</div></article>`;
  const section=document.createElement('section');section.className='section';section.id='threatWatch';
- section.innerHTML=`<div class="section-head"><div><h2>Global & UAE Threat Watch</h2><p>Headline monitoring and official advisory links</p></div></div>
- <div class="grid2"><div class="panel"><div class="region-top"><h3>Global threat watch</h3><span class="badge medium">NOT VERIFIED</span></div><p><b>Official threat level:</b> <span>Not assessed</span></p><p class="muted" id="globalWatchData">Waiting for news data</p><a href="https://www.gov.uk/foreign-travel-advice" target="_blank" rel="noopener noreferrer">Country travel advice (UK government) ↗</a></div>
- <div class="panel"><div class="region-top"><h3>UAE threat watch</h3><span class="badge medium">NOT VERIFIED</span></div><p><b>Official threat level:</b> <span>Not assessed</span></p><p class="muted" id="uaeWatchData">Waiting for news data</p><p><a href="https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies" target="_blank" rel="noopener noreferrer">UAE official emergency guidance ↗</a></p><a href="https://www.mofa.gov.ae/en/warnings" target="_blank" rel="noopener noreferrer">UAE MoFA travel warnings ↗</a></div></div>
- <p class="notice">These are headline counts, not a war probability or an official safety rating. Advisory links must be opened to check their latest guidance; they are not automatically verified here.</p>
- <details class="panel" style="margin-top:12px"><summary style="cursor:pointer">News source health</summary><p class="muted">Provider checks show feed availability, not independent verification of every report.</p><div id="sourceHealth" style="display:grid;gap:8px"></div></details>`;
+ section.innerHTML=`<div class="section-head"><div><div class="eyebrow">SIGNALS & CONTEXT</div><h2>Global & UAE Threat Watch</h2><p>Media attention, not a verified danger level</p></div><span class="snapshot-chip" id="snapshotFreshness">Waiting for news data</span></div><div class="grid2 watch-grid">${card('global','◎','Global threat watch','<a href="https://www.gov.uk/foreign-travel-advice" target="_blank" rel="noopener noreferrer">Country travel advice (UK government) ↗</a>')}${card('uae','◈','UAE & Gulf regional watch','<a href="https://u.ae/en/information-and-services/justice-safety-and-the-law/handling-emergencies" target="_blank" rel="noopener noreferrer">UAE official emergency guidance ↗</a><a href="https://www.mofa.gov.ae/en/warnings" target="_blank" rel="noopener noreferrer">UAE MoFA travel warnings ↗</a>')}</div><p class="watch-disclaimer">LOW / MODERATE / HIGH describes headline activity only. It is not a war probability, travel clearance or official threat assessment. No matching news is not an all-clear.</p><details class="panel watch-method"><summary>How these indicators work</summary><p>Escalation keyword matches: 0–2 = LOW, 3–5 = MODERATE, 6+ = HIGH. The UAE card covers UAE and nearby Gulf/transport-route headlines, not confirmed threats inside the UAE.</p><p>At least 5 headlines and 2 responding sources are required. Partial or stale data hides the level. Publisher timestamps and headlines do not verify events.</p></details><details class="panel source-health"><summary>News source health</summary><p class="muted">Provider checks show feed availability, not independent verification of every report.</p><div id="sourceHealth" class="source-health-grid"></div></details>`;
  document.querySelector('.metrics').after(section);
+ function setCard(id,n,total,ready){
+  const level=!ready?'unknown':!total?'none':band(n);document.getElementById(id+'WatchCard').dataset.level=level;
+  document.getElementById(id+'WatchLevel').textContent=labels[level];
+  document.getElementById(id+'WatchData').textContent=ready?`${n} escalation-keyword matches across ${total} monitored headlines.`:'Insufficient fresh coverage for a current assessment.';
+ }
  function update(){
   const data=typeof rssMetadata==='object'&&rssMetadata,items=typeof allArticles!=='undefined'?allArticles:[];
-  const ok=data&&data.status==='ok'&&!data.stale&&items.length;
-  if(!ok){document.getElementById('globalWatchData').textContent='Insufficient fresh coverage for a current assessment.';document.getElementById('uaeWatchData').textContent='Insufficient fresh coverage for a current assessment.';}
-  else{
-   const escalations=items.filter(a=>urgent.test(a.title)).length;
-   const direct=items.filter(a=>/\b(UAE|United Arab Emirates|Dubai|Abu Dhabi|Sharjah|Fujairah)\b/i.test(a.title)).length;
-   const regional=items.filter(a=>/\b(Iran|Hormuz|Gulf|Red Sea|Houthi|Saudi Arabia|Yemen|airspace|tanker)\b/i.test(a.title)).length;
-   document.getElementById('globalWatchData').textContent=`${items.length} reports in this snapshot; ${escalations} match escalation keywords.`;
-   document.getElementById('uaeWatchData').textContent=`${direct} headlines directly mention UAE locations; ${regional} mention nearby regions or transport routes. These groups may overlap.`;
-  }
+  const responding=(data?.sources||[]).filter(s=>!s.error&&!s.stale&&s.lastSuccessAt).length;
+  const ready=!!(data&&data.status==='ok'&&!data.stale&&items.length>=5&&responding>=2);
+  const regional=items.filter(a=>route.test(a.title));
+  setCard('global',items.filter(a=>urgent.test(a.title)).length,items.length,ready);
+  document.getElementById('globalScore').textContent=ready?band(items.filter(a=>urgent.test(a.title)).length).toUpperCase():'—';
+  document.getElementById('globalLabel').textContent='Headline activity only; not a threat probability.';
+  setCard('uae',regional.filter(a=>urgent.test(a.title)).length,regional.length,ready);
+  document.getElementById('uaeDirectData').textContent=ready?`${items.filter(a=>direct.test(a.title)).length} headlines directly mention UAE locations. Regional coverage does not establish a direct UAE threat.`:'Official advisories must be checked separately.';
+  const stamp=document.getElementById('snapshotFreshness');stamp.textContent=!data?'Waiting for news data':data.stale||data.status!=='ok'?'PARTIAL / STALE COVERAGE':'RECENT PROVIDER CHECK';stamp.dataset.fresh=String(ready);
   const health=document.getElementById('sourceHealth');health.replaceChildren();
-  for(const source of data?.sources||[]){const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px';
-   const name=document.createElement('span');name.textContent=source.id;
-   const status=document.createElement('span');status.textContent=source.error?'Source unavailable':source.stale?'Source stale':'Source responding';
-   row.append(name,status);health.append(row);}
+  for(const source of data?.sources||[]){const row=document.createElement('div');row.className='source-health-item';const name=document.createElement('span');name.textContent=source.id;const status=document.createElement('span');status.className='source-health-status';status.dataset.ok=String(!source.error&&!source.stale);status.textContent=source.error?'Source unavailable':source.stale?'Source stale':'Source responding';row.append(name,status);health.append(row);}
  }
  const prior=refresh;refresh=async function(){await prior();update();};
  new MutationObserver(()=>{if(!busy)update();}).observe(document.getElementById('connection'),{childList:true,characterData:true,subtree:true});
@@ -599,10 +621,50 @@ refresh();
 
 </script>
 <script>
+(() => {
+ const controls=document.createElement('div');controls.className='news-tools';
+ controls.innerHTML='<div class="news-search-field"><label for="newsSearch">Search headlines</label><input id="newsSearch" type="search" data-i18n-placeholder="Search headlines or publisher…" placeholder="Search headlines or publisher…" autocomplete="off"></div><div><label for="newsSource">Publisher</label><select id="newsSource"><option value="all">All sources</option></select></div><button id="resetNewsFilters" type="button">Reset filters</button><p id="visibleReportCount" class="muted" aria-live="polite"></p>';
+ document.getElementById('connection').before(controls);
+ const search=document.getElementById('newsSearch'),source=document.getElementById('newsSource'),originalRender=renderNews;
+ renderNews=function(items){
+  const selected=source.value,available=[...new Set(items.map(a=>a.source).filter(Boolean))].sort(),signature=available.join('|');
+  if(source.dataset.sources!==signature){source.replaceChildren();const all=document.createElement('option');all.value='all';all.textContent='All sources';source.append(all);for(const name of available){const o=document.createElement('option');o.value=name;o.textContent=name;source.append(o);}source.dataset.sources=signature;source.value=available.includes(selected)?selected:'all';}
+  const q=search.value.trim().toLocaleLowerCase(),filtered=items.filter(a=>(source.value==='all'||a.source===source.value)&&(!q||`${a.title} ${a.source} ${a.domain}`.toLocaleLowerCase().includes(q)));
+  originalRender(filtered);document.getElementById('visibleReportCount').textContent=`Showing ${document.querySelectorAll('#news .article').length} of ${items.length} reports`;
+ };
+ search.addEventListener('input',()=>renderNews(allArticles));source.addEventListener('change',()=>renderNews(allArticles));
+ document.getElementById('resetNewsFilters').addEventListener('click',()=>{search.value='';source.value='all';document.getElementById('filter').value='all';renderNews(allArticles);});
+ renderNews(allArticles);
+})();
+
+</script>
+<script>
 // Local interface translations. Publisher headlines and author credits are never rewritten.
 (() => {
  const locales={en:'en',ml:'ml',hi:'hi',ta:'ta'};
  const rows=[
+ ['Headline activity only; not a threat probability.','വാർത്തകളിലെ പ്രവർത്തനം മാത്രം; അപകടസാധ്യതയുടെ അളവല്ല.','केवल समाचारों की गतिविधि; ख़तरे की संभावना नहीं।','செய்தித் தலைப்புகளின் செயல்பாடு மட்டுமே; அச்சுறுத்தல் நிகழ்தகவு அல்ல.'],
+ ['SIGNALS & CONTEXT','സൂചനകളും പശ്ചാത്തലവും','संकेत और संदर्भ','குறியீடுகளும் பின்னணியும்'],
+ ['Media attention, not a verified danger level','വാർത്തകളിലെ ശ്രദ്ധ; സ്ഥിരീകരിച്ച അപകടനിലയല്ല','समाचारों में ध्यान, पुष्टि किया गया ख़तरे का स्तर नहीं','செய்திக் கவனம்; உறுதிசெய்யப்பட்ட அபாய நிலை அல்ல'],
+ ['UAE & Gulf regional watch','യുഎഇ, ഗൾഫ് മേഖലാ നിരീക്ഷണം','यूएई और खाड़ी क्षेत्र पर नज़र','அமீரகம் மற்றும் வளைகுடா கண்காணிப்பு'],
+ ['NEWS SIGNAL','വാർത്താസൂചന','समाचार संकेत','செய்திக் குறியீடு'],
+ ['HIGH MEDIA SIGNAL','ഉയർന്ന വാർത്താസൂചന','उच्च समाचार संकेत','அதிக செய்திக் குறியீடு'],
+ ['MODERATE MEDIA SIGNAL','ഇടത്തരം വാർത്താസൂചന','मध्यम समाचार संकेत','மிதமான செய்திக் குறியீடு'],
+ ['LOW MEDIA SIGNAL','കുറഞ്ഞ വാർത്താസൂചന','कम समाचार संकेत','குறைந்த செய்திக் குறியீடு'],
+ ['INSUFFICIENT DATA','മതിയായ വിവരങ്ങളില്ല','अपर्याप्त जानकारी','போதுமான தரவு இல்லை'],
+ ['NO MATCHING REPORTS','ബന്ധപ്പെട്ട റിപ്പോർട്ടുകളില്ല','संबंधित रिपोर्ट नहीं','பொருந்தும் அறிக்கைகள் இல்லை'],
+ ['LOW','കുറഞ്ഞത്','कम','குறைவு'],['HIGH','ഉയർന്നത്','उच्च','அதிகம்'],
+ ['RECENT PROVIDER CHECK','ഉറവിടങ്ങൾ അടുത്തിടെ പരിശോധിച്ചു','स्रोत हाल में जाँचे गए','ஆதாரங்கள் அண்மையில் சரிபார்க்கப்பட்டன'],
+ ['PARTIAL / STALE COVERAGE','അപൂർണമായ / പഴയ വിവരങ്ങൾ','अधूरी / पुरानी जानकारी','முழுமையற்ற / பழைய தகவல்'],
+ ['How these indicators work','ഈ സൂചികകൾ എങ്ങനെ പ്രവർത്തിക്കുന്നു','ये संकेत कैसे काम करते हैं','இந்தக் குறியீடுகள் செயல்படுவது எப்படி'],
+ ['LOW / MODERATE / HIGH describes headline activity only. It is not a war probability, travel clearance or official threat assessment. No matching news is not an all-clear.','കുറഞ്ഞത് / ഇടത്തരം / ഉയർന്നത് എന്നത് വാർത്തകളിലെ പ്രവർത്തനം മാത്രമാണ്. ഇത് യുദ്ധസാധ്യതയോ യാത്രാനുമതിയോ ഔദ്യോഗിക അപകട വിലയിരുത്തലോ അല്ല. ബന്ധപ്പെട്ട വാർത്തകളില്ലാത്തത് സുരക്ഷാ ഉറപ്പല്ല.','कम / मध्यम / उच्च केवल समाचारों की गतिविधि बताते हैं। यह युद्ध की संभावना, यात्रा की मंज़ूरी या आधिकारिक ख़तरे का आकलन नहीं है। समाचार न मिलना सुरक्षा की गारंटी नहीं है।','குறைவு / மிதம் / அதிகம் என்பது செய்தித் தலைப்புகளின் செயல்பாட்டை மட்டுமே குறிக்கும். இது போரின் நிகழ்தகவு, பயண அனுமதி அல்லது அதிகாரப்பூர்வ அச்சுறுத்தல் மதிப்பீடு அல்ல. செய்திகள் இல்லாதது பாதுகாப்பு உறுதி அல்ல.'],
+ ['Escalation keyword matches: 0–2 = LOW, 3–5 = MODERATE, 6+ = HIGH. The UAE card covers UAE and nearby Gulf/transport-route headlines, not confirmed threats inside the UAE.','സംഘർഷവർധനാ പദങ്ങളുള്ള തലക്കെട്ടുകൾ: 0–2 = കുറഞ്ഞത്, 3–5 = ഇടത്തരം, 6+ = ഉയർന്നത്. യുഎഇ card സമീപ ഗൾഫ് മേഖലയുടെയും ഗതാഗതപാതകളുടെയും വാർത്തകളും ഉൾപ്പെടുത്തുന്നു; യുഎഇയിലെ സ്ഥിരീകരിച്ച ഭീഷണികളല്ല.','तनाव बढ़ने से जुड़े शब्दों वाली सुर्खियाँ: 0–2 = कम, 3–5 = मध्यम, 6+ = उच्च। यूएई कार्ड में आसपास के खाड़ी क्षेत्र और परिवहन मार्गों की खबरें भी हैं; ये यूएई के भीतर पुष्टि किए गए ख़तरे नहीं हैं।','மோதல் தீவிரச் சொற்கள் உள்ள தலைப்புகள்: 0–2 = குறைவு, 3–5 = மிதம், 6+ = அதிகம். அமீரக அட்டையில் அருகிலுள்ள வளைகுடா மற்றும் போக்குவரத்துப் பாதைச் செய்திகளும் அடங்கும்; இவை அமீரகத்திற்குள் உறுதிசெய்யப்பட்ட அச்சுறுத்தல்கள் அல்ல.'],
+ ['At least 5 headlines and 2 responding sources are required. Partial or stale data hides the level. Publisher timestamps and headlines do not verify events.','കുറഞ്ഞത് 5 തലക്കെട്ടുകളും പ്രതികരിക്കുന്ന 2 ഉറവിടങ്ങളും വേണം. അപൂർണമോ പഴയതോ ആയ വിവരങ്ങൾ വരുമ്പോൾ നില കാണിക്കില്ല. തലക്കെട്ടും പ്രസാധകന്റെ സമയവും സംഭവങ്ങൾ സ്ഥിരീകരിക്കില്ല.','कम से कम 5 सुर्खियाँ और 2 जवाब देने वाले स्रोत चाहिए। अधूरे या पुराने डेटा पर स्तर नहीं दिखाया जाता। प्रकाशन का समय और शीर्षक घटना की पुष्टि नहीं करते।','குறைந்தது 5 தலைப்புகளும் செயல்படும் 2 ஆதாரங்களும் தேவை. முழுமையற்ற அல்லது பழைய தரவிற்கு நிலை காட்டப்படாது. வெளியீட்டு நேரமும் தலைப்புகளும் நிகழ்வுகளை உறுதிப்படுத்தாது.'],
+ ['Official advisories must be checked separately.','ഔദ്യോഗിക നിർദ്ദേശങ്ങൾ പ്രത്യേകം പരിശോധിക്കണം.','आधिकारिक परामर्श अलग से जाँचें।','அதிகாரப்பூர்வ அறிவுரைகளைத் தனியாகச் சரிபார்க்கவும்.'],
+ ['Search headlines','വാർത്തകൾ തിരയുക','समाचार खोजें','செய்திகளைத் தேடவும்'],
+ ['Search headlines or publisher…','തലക്കെട്ടോ പ്രസാധകനോ തിരയുക…','सुर्खी या प्रकाशक खोजें…','தலைப்பு அல்லது வெளியீட்டாளரைத் தேடவும்…'],
+ ['Publisher','പ്രസാധകൻ','प्रकाशक','வெளியீட்டாளர்'],['All sources','എല്ലാ ഉറവിടങ്ങളും','सभी स्रोत','அனைத்து ஆதாரங்களும்'],
+ ['Reset filters','തിരഞ്ഞെടുപ്പുകൾ മായ്ക്കുക','फ़िल्टर हटाएँ','வடிகட்டிகளை மீட்டமைக்கவும்'],
  ['Global & UAE Threat Watch','ആഗോള, യുഎഇ സുരക്ഷാ നിരീക്ഷണം','वैश्विक और यूएई सुरक्षा निगरानी','உலக மற்றும் அமீரகப் பாதுகாப்புக் கண்காணிப்பு'],
  ['Headline monitoring and official advisory links','വാർത്താ നിരീക്ഷണവും ഔദ്യോഗിക അറിയിപ്പുകളുടെ ലിങ്കുകളും','समाचार निगरानी और आधिकारिक परामर्श लिंक','செய்திக் கண்காணிப்பும் அதிகாரப்பூர்வ அறிவுரை இணைப்புகளும்'],
  ['Global threat watch','ആഗോള സുരക്ഷാ നിരീക്ഷണം','वैश्विक सुरक्षा निगरानी','உலகப் பாதுகாப்புக் கண்காணிப்பு'],
@@ -730,6 +792,9 @@ refresh();
   if(lang==='en')return text;
   const direct=t(text);if(direct!==text)return direct;
   let m;
+  if((m=text.match(/^(\d+) escalation-keyword matches across (\d+) monitored headlines\.$/)))return [text,`പരിശോധിച്ച ${m[2]} തലക്കെട്ടുകളിൽ ${m[1]} എണ്ണത്തിൽ സംഘർഷവർധനാ പദങ്ങളുണ്ട്.`,`जाँची गई ${m[2]} सुर्खियों में ${m[1]} में तनाव बढ़ने से जुड़े शब्द हैं।`,`கண்காணித்த ${m[2]} தலைப்புகளில் ${m[1]} தலைப்புகளில் மோதல் தீவிரச் சொற்கள் உள்ளன.`][languageIndex()];
+  if((m=text.match(/^(\d+) headlines directly mention UAE locations\. Regional coverage does not establish a direct UAE threat\.$/)))return [text,`${m[1]} തലക്കെട്ടുകളിൽ യുഎഇ സ്ഥലങ്ങളെ നേരിട്ട് പരാമർശിക്കുന്നു. പ്രാദേശിക വാർത്തകൾ മാത്രം യുഎഇയ്ക്ക് നേരിട്ടുള്ള ഭീഷണി സ്ഥിരീകരിക്കില്ല.`,`${m[1]} सुर्खियों में यूएई के स्थानों का सीधा उल्लेख है। क्षेत्रीय खबरें अकेले यूएई पर सीधा ख़तरा साबित नहीं करतीं।`,`${m[1]} தலைப்புகளில் அமீரக இடங்கள் நேரடியாகக் குறிப்பிடப்படுகின்றன. பிராந்தியச் செய்திகள் மட்டும் அமீரகத்திற்கான நேரடி அச்சுறுத்தலை உறுதிப்படுத்தாது.`][languageIndex()];
+  if((m=text.match(/^Showing (\d+) of (\d+) reports$/)))return [text,`${m[2]} റിപ്പോർട്ടുകളിൽ ${m[1]} കാണിക്കുന്നു`,`${m[2]} में से ${m[1]} रिपोर्ट दिखाई जा रही हैं`,`${m[2]} அறிக்கைகளில் ${m[1]} காட்டப்படுகின்றன`][languageIndex()];
   if((m=text.match(/^(\d+) reports in this snapshot; (\d+) match escalation keywords\.$/)))return [text,`ഈ ശേഖരത്തിൽ ${m[1]} റിപ്പോർട്ടുകൾ; ${m[2]} എണ്ണത്തിൽ സംഘർഷവർധനയുമായി ബന്ധപ്പെട്ട പദങ്ങളുണ്ട്.`,`इस संग्रह में ${m[1]} रिपोर्ट; ${m[2]} में तनाव बढ़ने से जुड़े शब्द हैं।`,`இந்தத் தொகுப்பில் ${m[1]} அறிக்கைகள்; ${m[2]} அறிக்கைகளில் மோதல் தீவிரம் தொடர்பான சொற்கள் உள்ளன.`][languageIndex()];
   if((m=text.match(/^(\d+) headlines directly mention UAE locations; (\d+) mention nearby regions or transport routes\. These groups may overlap\.$/)))return [text,`${m[1]} തലക്കെട്ടുകളിൽ യുഎഇ സ്ഥലങ്ങൾ നേരിട്ട് പരാമർശിക്കുന്നു; ${m[2]} എണ്ണത്തിൽ സമീപമേഖലകളോ ഗതാഗതപാതകളോ പരാമർശിക്കുന്നു. ഒരേ വാർത്ത രണ്ടിലും ഉൾപ്പെട്ടേക്കാം.`,`${m[1]} सुर्खियों में यूएई के स्थानों का सीधा उल्लेख; ${m[2]} में आसपास के क्षेत्र या परिवहन मार्ग हैं। एक रिपोर्ट दोनों समूहों में हो सकती है।`,`${m[1]} தலைப்புகளில் அமீரக இடங்கள் நேரடியாகக் குறிப்பிடப்படுகின்றன; ${m[2]} தலைப்புகளில் அருகிலுள்ள பகுதிகள் அல்லது போக்குவரத்துப் பாதைகள் குறிப்பிடப்படுகின்றன. ஒரே அறிக்கை இரண்டிலும் இருக்கலாம்.`][languageIndex()];
   if((m=text.match(/^(\d+) reports · (.+)$/)))return [text,`${m[1]} റിപ്പോർട്ടുകൾ · `,`${m[1]} रिपोर्ट · `,`${m[1]} அறிக்கைகள் · `][languageIndex()]+translate(m[2]);
@@ -754,6 +819,7 @@ refresh();
  const records=new WeakMap();let observer,queued=false;
  function apply(){
   observer?.disconnect();document.documentElement.lang=lang;
+  for(const el of document.querySelectorAll?.('[data-i18n-placeholder]')||[])el.setAttribute('placeholder',translate(el.getAttribute('data-i18n-placeholder')));
   const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
   while(walk.nextNode()){
    const n=walk.currentNode,parent=n.parentElement;
