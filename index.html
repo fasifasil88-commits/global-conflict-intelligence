@@ -485,9 +485,85 @@ $("clearTrend").addEventListener("click",()=>{
 });
 window.addEventListener("resize",drawTrend);
 drawTrend();
-refresh();
+//refresh();
 // Avoid hammering the public news service: automatic refresh every 15 minutes.
 setInterval(()=>{if(!busy)refresh()},900000);
+</script>
+<script>
+// Add as a NEW <script> AFTER the existing script, immediately before </body>.
+// Keep the original HTML backed up. This code uses the functions/IDs in your supplied HTML.
+// It cannot undo the original script's first automatic GDELT call: see setup guide.
+const RSS_API='https://global-conflict-api.fasifasil88.workers.dev';
+let rssMetadata=null;
+fetchNews=async function(){
+ const c=new AbortController(),timer=setTimeout(()=>c.abort(),15000);
+ try{
+  const r=await fetch(RSS_API+'/news',{signal:c.signal,cache:'no-store'});
+  const data=await r.json();rssMetadata=data;
+  if(!r.ok||!Array.isArray(data.articles))throw Error(data.error||'Worker HTTP '+r.status);
+  return data.articles.filter(a=>a.title&&!/%AutoEntityLabel\s*:/i.test(a.title)&&/^https?:\/\//i.test(a.url)).map(a=>({...a,
+   domain:a.domain||domain(a.url),date:a.seendate||a.date||'',image:'',
+   trusted:isTrusted(a.url),region:classify(a)}));
+ }finally{clearTimeout(timer)}
+};
+renderNews=function(items){
+ const f=$('filter').value,filtered=(f==='all'?items:items.filter(a=>a.region===f)).slice(0,45);
+ if(!filtered.length){$('news').innerHTML='<div class="panel">No matching RSS headlines. This does not mean there are no conflicts.</div>';return}
+ $('news').innerHTML=filtered.map(a=>`<article class="article"><div class="article-body">
+ <div class="meta"><span class="badge">RSS REPORT</span><span>${esc(a.region)}</span></div>
+ <h3><a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">${esc(a.title)} ↗</a></h3>
+ <div class="meta">${esc(a.source)}${a.author?' · '+esc(a.author):''} · ${esc(fmt(a.date))}</div>
+ <p class="summary">Original: <a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">${esc(a.domain)}</a>.
+ <a href="${esc(a.attributionUrl)}" target="_blank" rel="noopener noreferrer">Source terms</a>
+ ${a.sourceId==='global-voices'?' · <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>':''}
+ · Headline formatted as plain text. No body text or photo reproduced.</p>
+ </div></article>`).join('');
+};
+refresh=async function(){
+ if(busy)return;busy=true;rssMetadata=null;
+ const btn=$('refresh');btn.disabled=true;btn.textContent='↻ Checking…';
+ $('connection').textContent='Reading the latest scheduled RSS snapshot…';
+ try{
+  const articles=await fetchNews();allArticles=[...new Map(articles.map(a=>[a.url,a])).values()];
+  renderRegions(allArticles);renderNews(allArticles);renderAlerts(allArticles);renderImpact(allArticles);
+  $('articleCount').textContent=allArticles.length;
+  $('priorityCount').textContent=allArticles.filter(a=>urgent.test(a.title)).length;
+  $('lastUpdated').textContent=rssMetadata.updatedAt?fmt(rssMetadata.updatedAt):'—';
+  const degraded=rssMetadata.stale||rssMetadata.status!=='ok';
+  $('feedStatus').textContent=degraded?'Partial or stale RSS snapshot':'RSS snapshot available';
+  $('liveLabel').textContent=degraded?'PARTIAL / STALE RSS DATA':'SCHEDULED RSS SNAPSHOT';
+  $('connection').textContent=`${allArticles.length} headlines from selected RSS feeds, up to 7 days old. `+
+   `Last provider check: ${fmt(rssMetadata.updatedAt)}. `+
+   (degraded?'Some sources failed or are stale. ':'')+
+   'Refresh reads the cache; providers are checked every 30 minutes. Coverage differs from the former GDELT feed.';
+  if(degraded||!allArticles.length){
+   $('globalScore').textContent='N/A';$('globalLabel').textContent='Incomplete or empty RSS data — score withheld';
+   $('priorityCount').textContent='—';
+   regions.forEach((r,i)=>{$('score'+i).textContent='—';$('bar'+i).style.width='0%';$('badge'+i).textContent='LIMITED DATA';$('badge'+i).className='badge medium';$('count'+i).textContent='Coverage incomplete';});
+   for(const id of ['oilBadge','flightBadge','shipBadge']){$(id).textContent='LIMITED DATA';$(id).className='badge medium';}
+   for(const id of ['oilText','flightText','shipText'])$(id).textContent='Partial or stale headlines cannot support a current assessment. Check official advisories.';
+  }else{
+   const n=score(allArticles);$('globalScore').textContent=n+'/100';
+   $('globalLabel').textContent='Selected RSS headline signal; not comparable with GDELT';
+   // Re-reading an unchanged cache must not create a new historical observation.
+   try{const key='gciRssLastSnapshot';if(localStorage.getItem(key)!==rssMetadata.updatedAt){trendSave(n);localStorage.setItem(key,rssMetadata.updatedAt);}}catch{}
+  }
+ }catch(e){
+  allArticles=[];$('feedStatus').textContent='RSS unavailable';$('liveLabel').textContent='DATA UNAVAILABLE';
+  $('connection').textContent='RSS snapshot unavailable: '+(e.name==='AbortError'?'request timed out':e.message)+'. Check /diagnostics and the scheduled trigger.';
+  $('news').innerHTML='<div class="panel">No invented headlines. Use the original source links while the service is unavailable.</div>';
+  $('globalScore').textContent='N/A';$('globalLabel').textContent='No usable snapshot';
+  $('articleCount').textContent='—';$('priorityCount').textContent='—';$('lastUpdated').textContent='—';
+  renderRegionCards();$('alerts').textContent='No current assessment available.';
+  for(const id of ['oilBadge','flightBadge','shipBadge']){$(id).textContent='NO DATA';$(id).className='badge';}
+  for(const id of ['oilText','flightText','shipText'])$(id).textContent='No assessment available. Check official advisories.';
+ }finally{busy=false;btn.disabled=false;btn.textContent='↻ Refresh intelligence';}
+};
+// Reconnect the button: its original listener captured the old function.
+const rssOldButton=$('refresh'),rssNewButton=rssOldButton.cloneNode(true);
+rssOldButton.replaceWith(rssNewButton);rssNewButton.addEventListener('click',()=>refresh());
+refresh();
+
 </script>
 </body>
 </html>
