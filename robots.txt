@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Sitemap: https://global-conflict-intelligence.pages.dev/sitemap.xml
